@@ -6,7 +6,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
+import java.time.LocalDate;
 import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Entity
@@ -38,12 +42,12 @@ public class Voyage {
     private int version;
 
     @Column(name = "date_depart")
-    private Date dateDepart;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate dateDepart;
 
     @Column(name = "date_retour")
-    private Date dateRetour;
-
-
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate dateRetour;
 
     // Getters
     public int getPkVoyage() {
@@ -74,11 +78,11 @@ public class Voyage {
         return version;
     }
 
-    public Date getDateDepart() {
+    public LocalDate getDateDepart() {
         return dateDepart;
     }
 
-    public Date getDateRetour() {
+    public LocalDate getDateRetour() {
         return dateRetour;
     }
 
@@ -111,11 +115,11 @@ public class Voyage {
         this.version = version;
     }
 
-    public void setDateDepart(Date dateDepart) {
+    public void setDateDepart(LocalDate dateDepart) {
         this.dateDepart = dateDepart;
     }
 
-    public void setDateRetour(Date dateRetour) {
+    public void setDateRetour(LocalDate dateRetour) {
         this.dateRetour = dateRetour;
     }
 

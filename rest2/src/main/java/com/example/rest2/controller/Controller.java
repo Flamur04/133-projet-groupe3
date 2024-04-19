@@ -7,9 +7,12 @@ import com.example.rest2.repository.PaysRepository;
 import com.example.rest2.repository.VoyageRepository;
 import com.example.rest2.services.PaysService;
 import com.example.rest2.services.VoyageService;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,11 +47,15 @@ public class Controller {
     public @ResponseBody String addNewPays(@RequestParam String name) {
         return paysService.addNewPays(name);
     }
-    
+
     @PostMapping(path = "/addVoyage")
-    public @ResponseBody String addNewVoyage(@RequestParam String name, @RequestParam String description, @RequestParam double prix, @RequestParam int nombreJour, @RequestParam String fkPays, @RequestParam int version, @RequestParam Date dateDepart, @RequestParam Date dateRetour) {
+    public @ResponseBody String addNewVoyage(@RequestParam String name, @RequestParam String description, @RequestParam double prix, @RequestParam int nombreJour, @RequestParam String fkPays, @RequestParam int version, 
+    @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart, 
+    @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateRetour) {
         return voyageService.addNewVoyage(name, description, prix, nombreJour, fkPays, version, dateDepart, dateRetour);
     }
+    
+
     
 
 }
