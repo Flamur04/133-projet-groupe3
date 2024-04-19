@@ -1,21 +1,53 @@
 package com.example.rest2.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.util.Date;
 
+
+@Entity
+@Table(name = "T_Voyage")
 public class Voyage {
-    private int pkVoyage;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "PK_Voyage")
+    private Integer id;
+
+
+    @Column(name = "nom", length = 50)
     private String nom;
+
+    @Column(name = "description", length = 200)
     private String description;
+
+    @Column(name = "prix")
     private double prix;
+
+    @Column(name = "nombre_Jour")
     private int nombreJour;
+
+    @Column(name = "fkPays", length = 50)
     private String fkPays;
+
+    @Column(name = "version")
     private int version;
+
+    @Column(name = "date_depart")
     private Date dateDepart;
+
+    @Column(name = "date_retour")
     private Date dateRetour;
+
+
 
     // Getters
     public int getPkVoyage() {
-        return pkVoyage;
+        return id;
     }
 
     public String getNom() {
@@ -52,7 +84,7 @@ public class Voyage {
 
     // Setters
     public void setPkVoyage(int pkVoyage) {
-        this.pkVoyage = pkVoyage;
+        this.id = pkVoyage;
     }
 
     public void setNom(String nom) {
@@ -86,4 +118,5 @@ public class Voyage {
     public void setDateRetour(Date dateRetour) {
         this.dateRetour = dateRetour;
     }
+
 }

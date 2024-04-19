@@ -44,6 +44,7 @@ public class Controller {
     public @ResponseBody String addNewPays(@RequestParam String name) {
         return paysService.addNewPays(name);
     }
+    
     @PostMapping(path = "/addVoyage")
     public @ResponseBody String addNewVoyage(@RequestParam String name, @RequestParam String description, @RequestParam double prix, @RequestParam int nombreJour, @RequestParam String fkPays, @RequestParam int version, @RequestParam Date dateDepart, @RequestParam Date dateRetour) {
         return voyageService.addNewVoyage(name, description, prix, nombreJour, fkPays, version, dateDepart, dateRetour);
