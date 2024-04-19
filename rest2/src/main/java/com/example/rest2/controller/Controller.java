@@ -73,6 +73,23 @@ public class Controller {
     @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateRetour) {
         return voyageService.addNewVoyage(name, description, prix, nombreJour, fkPays, version, dateDepart, dateRetour);
     }
+
+    @PutMapping(path = "/updateVoyage/{id}")
+    public @ResponseBody String updateVoyage(@PathVariable Integer id, @RequestParam String name, @RequestParam String description, @RequestParam double prix, @RequestParam int nombreJour, @RequestParam String fkPays, @RequestParam int version, 
+    @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart, 
+    @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateRetour) {
+        return voyageService.updateVoyage(id, name, description, prix, nombreJour, fkPays, version, dateDepart, dateRetour);
+    }
+
+    @DeleteMapping(path = "/deleteVoyage/{id}")
+    public @ResponseBody String deleteVoyage(@PathVariable Integer id) {
+        return voyageService.deleteVoyage(id);
+    }
+
+    @GetMapping(path = "/getAllVoyages")
+    public @ResponseBody List<Voyage> getAllVoyages() {
+        return voyageService.getAllVoyages();
+    }
     
 
     
