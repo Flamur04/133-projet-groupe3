@@ -10,11 +10,15 @@ import com.example.rest2.services.VoyageService;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +50,21 @@ public class Controller {
     @PostMapping(path = "/addPays")
     public @ResponseBody String addNewPays(@RequestParam String name) {
         return paysService.addNewPays(name);
+    }
+
+    @PutMapping(path = "/updatePays/{id}")
+    public @ResponseBody String updatePays(@PathVariable Integer id, @RequestParam String name) {
+        return paysService.updatePays(id, name);
+    }
+
+    @DeleteMapping(path = "/deletePays/{id}")
+    public @ResponseBody String deletePays(@PathVariable Integer id) {
+        return paysService.deletePays(id);
+    }
+
+    @GetMapping(path = "/getAllPays")
+    public @ResponseBody List<Pays> getAllPays() {
+        return paysService.getAllPays();
     }
 
     @PostMapping(path = "/addVoyage")

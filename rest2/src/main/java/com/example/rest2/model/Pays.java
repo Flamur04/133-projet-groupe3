@@ -19,6 +19,10 @@ public class Pays {
     @Column(name = "nom", length = 50)
     private String nom;
 
+    @Column(name = "version")
+    private int version;
+
+
     // Getters et Setters
     public Integer getId() {
         return id;
@@ -28,11 +32,21 @@ public class Pays {
         this.id = id;
     }
 
+
+
     public String getNom() {
         return nom;
     }
 
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+    
+    public void setVersion(int version) {
+        this.version = version;
     }
 }

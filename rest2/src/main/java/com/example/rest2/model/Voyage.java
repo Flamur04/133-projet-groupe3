@@ -49,6 +49,10 @@ public class Voyage {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate dateRetour;
 
+    @Column(name = "image", nullable = true)
+    private byte[] image;
+
+
     // Getters
     public int getPkVoyage() {
         return id;
@@ -86,6 +90,10 @@ public class Voyage {
         return dateRetour;
     }
 
+    public byte[] getImage() {
+        return this.image;
+    }
+
     // Setters
     public void setPkVoyage(int pkVoyage) {
         this.id = pkVoyage;
@@ -121,6 +129,10 @@ public class Voyage {
 
     public void setDateRetour(LocalDate dateRetour) {
         this.dateRetour = dateRetour;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
 }

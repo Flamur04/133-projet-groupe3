@@ -1,5 +1,9 @@
 package com.example.rest2.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +27,36 @@ public class PaysService {
         newPays.setNom(name);
         paysRepository.save(newPays);
         return "saved";
+    }
+
+    @Transactional
+    public String updatePays(Integer id, String name) {
+        Pays existingPays = paysRepository.findById(id).orElse(null);
+        if (existingPays != null) {
+            existingPays.setNom(name);
+            existingPays.setVersion(existingPays.getVersion() + 1);
+            paysRepository.save(existingPays);
+            return "updated";
+        } else {
+            return "Pays not found";
+        }
+    }
+    
+
+    @Transactional
+    public String deletePays(Integer id) {
+        if (paysRepository.existsById(id)) {
+            paysRepository.deleteById(id);
+            return "deleted";
+        } else {
+            return "Pays not found";
+        }
+    }
+
+    public List<Pays> getAllPays() {
+        Iterable<Pays> paysIterable = paysRepository.findAll();
+        List<Pays> paysList = StreamSupport.stream(paysIterable.spliterator(), false).collect(Collectors.toList());
+        return paysList;
     }
     
 }
