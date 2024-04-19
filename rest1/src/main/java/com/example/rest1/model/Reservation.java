@@ -8,7 +8,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
+import java.time.LocalDate;
 import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "t_reservation")
@@ -26,10 +30,12 @@ public class Reservation {
     private Double prix;
 
     @Column(name = "DateDepart")
-    private Date dateDepart;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate dateDepart;
 
     @Column(name = "DateRetour")
-    private Date dateRetour;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate dateRetour;
 
     @Column(name = "Commentaire", length = 255)
     private String commentaire;
@@ -66,19 +72,19 @@ public class Reservation {
         this.prix = prix;
     }
 
-    public Date getDateDepart() {
+    public LocalDate getDateDepart() {
         return dateDepart;
     }
 
-    public void setDateDepart(Date dateDepart) {
+    public void setDateDepart(LocalDate dateDepart) {
         this.dateDepart = dateDepart;
     }
 
-    public Date getDateRetour() {
+    public LocalDate getDateRetour() {
         return dateRetour;
     }
 
-    public void setDateRetour(Date dateRetour) {
+    public void setDateRetour(LocalDate dateRetour) {
         this.dateRetour = dateRetour;
     }
 

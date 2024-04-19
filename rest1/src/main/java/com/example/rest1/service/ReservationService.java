@@ -21,22 +21,8 @@ public class ReservationService {
     }
 
     @Transactional
-    public Reservation addReservation(Reservation reservation, Integer userId) {
-        // Valider les données de la réservation
-        if (!validateReservation(reservation)) {
-            throw new IllegalArgumentException("Données de réservation invalides");
-        }
-
-        // Vérifier si une réservation existe déjà pour éviter les doublons
-        if (reservation.getId() != null && reservationRepository.existsById(reservation.getId())) {
-            throw new IllegalArgumentException("La réservation existe déjà");
-        }
-
-        // Associer l'utilisateur à la réservation
-        User user = new User();
-        user.setId(userId);
-        reservation.setUser(user);
-
+    public Reservation addReservation(Reservation reservation) {
+        // Ajouter la réservation en utilisant le ReservationRepository
         return reservationRepository.save(reservation);
     }
 
@@ -82,10 +68,6 @@ public class ReservationService {
             return false;
         }
         if (reservation.getDateDepart() == null || reservation.getDateRetour() == null) {
-            return false;
-        }
-        // Vérifier que la date de départ est avant la date de retour
-        if (reservation.getDateDepart().after(reservation.getDateRetour())) {
             return false;
         }
         // D'autres validations peuvent être ajoutées ici selon vos besoins

@@ -41,6 +41,8 @@ public class UserService {
         // Enregistrer le nouvel utilisateur dans la base de données
         return userRepository.save(newUser);
     }
+
+    
     
 
 }

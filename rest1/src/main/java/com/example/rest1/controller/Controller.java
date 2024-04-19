@@ -1,9 +1,12 @@
 package com.example.rest1.controller;
 
+import java.sql.Blob;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +17,7 @@ import com.example.rest1.model.Reservation;
 import com.example.rest1.model.User;
 import com.example.rest1.service.ReservationService;
 import com.example.rest1.service.UserService;
+import com.example.rest1.controller.BCryptPasswordEncoder;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -25,15 +29,18 @@ public class Controller {
 
     private final UserService userService;
     private final ReservationService reservationService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     /**
      * @param userService
      * @param reservationService
      */
     @Autowired
-    public Controller(UserService userService, ReservationService reservationService) {
+    public Controller(UserService userService, ReservationService reservationService,
+            BCryptPasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.reservationService = reservationService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // Handler pour GET
@@ -44,33 +51,34 @@ public class Controller {
     }
 
     @PostMapping(path = "/addReservation")
-    public ResponseEntity<String> addNewReservation(
+    public ResponseEntity<String> addReservation(@RequestParam String commentaire,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date_depart,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date_retour,
             @RequestParam String pays,
             @RequestParam Double prix,
-            @RequestParam Date dateDepart,
-            @RequestParam Date dateRetour,
-            @RequestParam String commentaire,
-            @RequestParam String img,
-            HttpSession session) {
+            @RequestParam Integer fk_user,
+            @RequestParam String img) {
 
-        // Vous devez d'abord récupérer l'ID de l'utilisateur à partir de la session
-        Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.badRequest().body("L'utilisateur n'est pas connecté");
-        }
-
-        // Créez une nouvelle réservation avec les paramètres fournis
-        Reservation newReservation = new Reservation();
-        newReservation.setPays(pays);
-        newReservation.setPrix(prix);
-        newReservation.setDateDepart(dateDepart);
-        newReservation.setDateRetour(dateRetour);
-        newReservation.setCommentaire(commentaire);
-        newReservation.setImg(img);
-
-        // Ajoutez la réservation en utilisant le service de réservation
         try {
-            reservationService.addReservation(newReservation, userId);
+            // Créer une nouvelle réservation avec les paramètres fournis
+            Reservation newReservation = new Reservation();
+            newReservation.setCommentaire(commentaire);
+            newReservation.setDateDepart(date_depart);
+            newReservation.setDateRetour(date_retour);
+            newReservation.setPays(pays);
+            newReservation.setPrix(prix);
+            newReservation.setImg(img);
+
+            // Récupérer l'utilisateur correspondant à l'ID fk_user
+            User user = userService.getUserById(fk_user); // Assurez-vous d'implémenter cette méthode dans votre service
+                                                          // UserService
+
+            // Définir l'utilisateur pour la réservation
+            newReservation.setUser(user);
+
+            // Ajouter la réservation en utilisant le service de réservation
+            reservationService.addReservation(newReservation);
+
             return ResponseEntity.ok("Réservation ajoutée avec succès");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -92,15 +100,12 @@ public class Controller {
     @PostMapping(path = "addUser")
     public ResponseEntity<String> addUser(@RequestParam String username, @RequestParam String password) {
         try {
-            // Créer un nouvel utilisateur avec les paramètres fournis
-            /*
-             * User newUser = new User();
-             * newUser.setUsername(username);
-             * newUser.setPassword(password);
-             */
+            // Hacher le mot de passe
+            String hashedPassword = passwordEncoder.hashPassword(password);
 
-            // Ajouter l'utilisateur en utilisant le service utilisateur
-            userService.addUser(username, password);
+            // Ajouter l'utilisateur en utilisant le service utilisateur avec le mot de
+            // passe haché
+            userService.addUser(username, hashedPassword);
 
             return ResponseEntity.ok("Utilisateur ajouté avec succès");
         } catch (IllegalArgumentException e) {
