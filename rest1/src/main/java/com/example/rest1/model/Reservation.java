@@ -1,3 +1,4 @@
+package com.example.rest1;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
