@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rest1.model.Reservation;
@@ -43,71 +46,19 @@ public class Controller {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Handler pour GET
-    @GetMapping("/")
-    public ResponseEntity<String> getNothing(HttpSession session) {
-        // Utilisez la session comme nécessaire
-        return ResponseEntity.ok("");
-    }
-
-    @PostMapping(path = "/addReservation")
-    public ResponseEntity<String> addReservation(@RequestParam String commentaire,
-            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date_depart,
-            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date_retour,
-            @RequestParam String pays,
-            @RequestParam Double prix,
-            @RequestParam Integer fk_user,
-            @RequestParam String img) {
-
-        try {
-            // Créer une nouvelle réservation avec les paramètres fournis
-            Reservation newReservation = new Reservation();
-            newReservation.setCommentaire(commentaire);
-            newReservation.setDateDepart(date_depart);
-            newReservation.setDateRetour(date_retour);
-            newReservation.setPays(pays);
-            newReservation.setPrix(prix);
-            newReservation.setImg(img);
-
-            // Récupérer l'utilisateur correspondant à l'ID fk_user
-            User user = userService.getUserById(fk_user); // Assurez-vous d'implémenter cette méthode dans votre service
-                                                          // UserService
-
-            // Définir l'utilisateur pour la réservation
-            newReservation.setUser(user);
-
-            // Ajouter la réservation en utilisant le service de réservation
-            reservationService.addReservation(newReservation);
-
-            return ResponseEntity.ok("Réservation ajoutée avec succès");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @GetMapping(path = "getReservationByUser")
-    public ResponseEntity<List<Reservation>> getUserReservations(@RequestParam Integer userId) {
-        // Récupérer les réservations de l'utilisateur spécifié
-        List<Reservation> userReservations = reservationService.getUserReservations(userId);
-
-        if (userReservations.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(userReservations);
-    }
-
     @PostMapping(path = "addUser")
-    public ResponseEntity<String> addUser(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<String> addUser(@RequestParam String username, @RequestParam String password,
+            @RequestParam Boolean isAdmin) {
         try {
             // Hacher le mot de passe
             String hashedPassword = passwordEncoder.hashPassword(password);
 
             // Ajouter l'utilisateur en utilisant le service utilisateur avec le mot de
-            // passe haché
-            userService.addUser(username, hashedPassword);
+            // passe haché et le statut d'administrateur
+            userService.addUser(username, hashedPassword, isAdmin);
 
             return ResponseEntity.ok("Utilisateur ajouté avec succès");
+
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -149,11 +100,101 @@ public class Controller {
         return ResponseEntity.ok("Déconnexion réussie");
     }
 
-    @GetMapping(path = "/visites")
-    public ResponseEntity<Integer> visites(HttpSession session) {
-        // Récupère le compteur de visites de la session
-        Integer visites = (Integer) session.getAttribute("visites");
-
-        return ResponseEntity.ok(visites);
+    // Handler pour GET
+    @GetMapping("/")
+    public ResponseEntity<String> getNothing(HttpSession session) {
+        // Utilisez la session comme nécessaire
+        return ResponseEntity.ok("");
     }
+
+    @PostMapping(path = "/addReservation")
+    public ResponseEntity<String> addReservation(@RequestParam String commentaire,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date_depart,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date_retour,
+            @RequestParam String pays,
+            @RequestParam Double prix,
+            @RequestParam Integer fk_user,
+            @RequestParam String img, HttpSession session) {
+
+        try {
+            // Récupérer l'utilisateur connecté à partir de la session
+            User user = (User) session.getAttribute("user");
+            if (user == null) {
+                return ResponseEntity.badRequest().body("Aucun utilisateur connecté");
+            }
+
+            // Créer une nouvelle réservation avec les paramètres fournis
+            Reservation newReservation = new Reservation();
+            newReservation.setCommentaire(commentaire);
+            newReservation.setDateDepart(date_depart);
+            newReservation.setDateRetour(date_retour);
+            newReservation.setPays(pays);
+            newReservation.setPrix(prix);
+            newReservation.setImg(img);
+
+            // Définir l'utilisateur pour la réservation
+            newReservation.setUser(user);
+
+            // Ajouter la réservation en utilisant le service de réservation
+            reservationService.addReservation(newReservation);
+
+            return ResponseEntity.ok("Réservation ajoutée avec succès");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping(path = "/deleteReservation")
+    public ResponseEntity<String> deleteReservation(@RequestParam Integer id) {
+        try {
+            // Supprimer la réservation en utilisant le service de réservation
+            reservationService.deleteReservation(id);
+
+            return ResponseEntity.ok("Réservation supprimée avec succès");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping(path = "/modifieReservation")
+    public ResponseEntity<String> modifieReservation(@RequestParam String commentaire,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date_depart,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date_retour,
+            @RequestParam String pays,
+            @RequestParam Double prix,
+            @RequestParam String img,
+            HttpSession session) {
+        try {
+            // Récupérer l'utilisateur connecté à partir de la session
+            User user = (User) session.getAttribute("user");
+            if (user == null) {
+                return ResponseEntity.badRequest().body("Aucun utilisateur connecté");
+            }
+
+            // Récupérer la réservation existante
+            Reservation reservation = (Reservation) reservationService.getUserReservations(user.getId());
+            if (reservation == null) {
+                return ResponseEntity.badRequest().body("La réservation avec l'ID " + user.getId() + " n'existe pas");
+            }
+
+            // Mettre à jour les détails de la réservation
+            reservation.setCommentaire(commentaire);
+            reservation.setDateDepart(date_depart);
+            reservation.setDateRetour(date_retour);
+            reservation.setPays(pays);
+            reservation.setPrix(prix);
+            reservation.setImg(img);
+
+            // Définir l'utilisateur pour la réservation
+            reservation.setUser(user);
+
+            // Modifier la réservation en utilisant le service de réservation
+            reservationService.modifieReservation(reservation);
+
+            return ResponseEntity.ok("Réservation modifiée avec succès");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

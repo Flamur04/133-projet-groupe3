@@ -37,12 +37,7 @@ public class ReservationService {
     public Reservation modifieReservation(Reservation reservation) {
         // Vérifier si la réservation existe avant de la modifier
         if (reservation.getId() == null || !reservationRepository.existsById(reservation.getId())) {
-            throw new IllegalArgumentException("La réservation n'existe pas");
-        }
-
-        // Valider les données de la réservation
-        if (!validateReservation(reservation)) {
-            throw new IllegalArgumentException("Données de réservation invalides");
+            throw new IllegalArgumentException("La réservation avec l'ID " + reservation.getId() + " n'existe pas");
         }
 
         return reservationRepository.save(reservation);

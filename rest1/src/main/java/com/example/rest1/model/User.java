@@ -15,12 +15,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PK_User")
     private Integer id;
-    
+
     @Column(name = "Username", length = 50)
     private String username;
 
     @Column(name = "Password", length = 50)
     private String password;
+
+    @Column(name = "IsAdmin")
+    private Boolean isAdmin; // Ajout de la nouvelle colonne
 
     // Getters et Setters
     public Integer getId() {
@@ -45,5 +48,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(Boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 }
