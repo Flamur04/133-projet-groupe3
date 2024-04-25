@@ -102,7 +102,7 @@ public class Controller {
     @GetMapping("/")
     public ResponseEntity<String> getNothing(HttpSession session) {
         // Utilisez la session comme nécessaire
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok("Api ok");
     }
 
     @PostMapping(path = "/addReservation")
