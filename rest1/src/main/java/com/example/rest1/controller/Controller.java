@@ -74,8 +74,11 @@ public class Controller {
     public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password,
             HttpSession session) {
 
+        // Hacher le mot de passe fourni et le comparer avec le hachage stocké
+        String hashedPassword = passwordEncoder.hashPassword(password);
+
         // Vérifiez les identifiants de l'utilisateur
-        final boolean validCredentials = userService.checkCredentials(username, password);
+        final boolean validCredentials = userService.checkCredentials(username, hashedPassword);
 
         if (!validCredentials) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Identifiants incorrects");
@@ -84,11 +87,6 @@ public class Controller {
         // Stockez le nom d'utilisateur dans la session
         session.setAttribute("username", username);
 
-        Integer visites = (Integer) session.getAttribute("visites");
-        if (visites == null) {
-            visites = 0;
-        }
-        session.setAttribute("visites", visites + 1);
         return ResponseEntity.ok("Logged in with " + username);
     }
 
@@ -108,14 +106,7 @@ public class Controller {
     }
 
     @PostMapping(path = "/addReservation")
-    public ResponseEntity<String> addReservation(@RequestParam String commentaire,
-            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date_depart,
-            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date_retour,
-            @RequestParam String pays,
-            @RequestParam Double prix,
-            @RequestParam Integer fk_user,
-            @RequestParam String img, HttpSession session) {
-
+    public ResponseEntity<String> addReservation(@RequestParam Integer Fk_voyage, HttpSession session) {
         try {
             // Récupérer l'utilisateur connecté à partir de la session
             User user = (User) session.getAttribute("user");
@@ -123,20 +114,19 @@ public class Controller {
                 return ResponseEntity.badRequest().body("Aucun utilisateur connecté");
             }
 
-            // Créer une nouvelle réservation avec les paramètres fournis
-            Reservation newReservation = new Reservation();
-            newReservation.setCommentaire(commentaire);
-            newReservation.setDateDepart(date_depart);
-            newReservation.setDateRetour(date_retour);
-            newReservation.setPays(pays);
-            newReservation.setPrix(prix);
-            newReservation.setImg(img);
+            // Récupérer le voyage correspondant à l'ID Fk_voyage
+            Reservation voyage = (Reservation) reservationService.getVoyageById(Fk_voyage);
+            if (voyage == null) {
+                return ResponseEntity.badRequest().body("Le voyage avec l'ID " + Fk_voyage + " n'existe pas");
+            }
 
-            // Définir l'utilisateur pour la réservation
-            newReservation.setUser(user);
+            // Créer une nouvelle réservation
+            Reservation reservation = new Reservation();
+            reservation.setUser(user);
+            reservation.setVoyage(Fk_voyage);
 
             // Ajouter la réservation en utilisant le service de réservation
-            reservationService.addReservation(newReservation);
+            reservationService.addReservation(reservation);
 
             return ResponseEntity.ok("Réservation ajoutée avec succès");
         } catch (IllegalArgumentException e) {
@@ -157,12 +147,7 @@ public class Controller {
     }
 
     @PutMapping(path = "/modifieReservation")
-    public ResponseEntity<String> modifieReservation(@RequestParam String commentaire,
-            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date_depart,
-            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date_retour,
-            @RequestParam String pays,
-            @RequestParam Double prix,
-            @RequestParam String img,
+    public ResponseEntity<String> modifieReservation(@RequestParam Integer Fk_voyage,
             HttpSession session) {
         try {
             // Récupérer l'utilisateur connecté à partir de la session
@@ -176,14 +161,6 @@ public class Controller {
             if (reservation == null) {
                 return ResponseEntity.badRequest().body("La réservation avec l'ID " + user.getId() + " n'existe pas");
             }
-
-            // Mettre à jour les détails de la réservation
-            reservation.setCommentaire(commentaire);
-            reservation.setDateDepart(date_depart);
-            reservation.setDateRetour(date_retour);
-            reservation.setPays(pays);
-            reservation.setPrix(prix);
-            reservation.setImg(img);
 
             // Définir l'utilisateur pour la réservation
             reservation.setUser(user);

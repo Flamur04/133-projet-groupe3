@@ -7,4 +7,5 @@ import com.example.rest1.model.Reservation;
 
 public interface ReservationRepository extends CrudRepository<Reservation, Integer> {
     List<Reservation> findByUserId(Integer userId);
+    List<Reservation> findByVoyageId(Integer voyageId);
 }

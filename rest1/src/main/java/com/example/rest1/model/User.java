@@ -25,6 +25,9 @@ public class User {
     @Column(name = "IsAdmin")
     private Boolean isAdmin; // Ajout de la nouvelle colonne
 
+    @Column(name = "Version")
+    private Integer version;
+
     // Getters et Setters
     public Integer getId() {
         return id;
@@ -56,5 +59,13 @@ public class User {
 
     public void setIsAdmin(Boolean isAdmin) {
         this.isAdmin = isAdmin;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }
