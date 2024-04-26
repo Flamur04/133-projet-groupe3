@@ -47,15 +47,14 @@ public class Controller {
     }
 
     @PostMapping(path = "addUser")
-    public ResponseEntity<String> addUser(@RequestParam String username, @RequestParam String password,
-            @RequestParam Boolean isAdmin) {
+    public ResponseEntity<String> addUser(@RequestParam String username, @RequestParam String password) {
         try {
             // Hacher le mot de passe
             String hashedPassword = passwordEncoder.hashPassword(password);
 
             // Ajouter l'utilisateur en utilisant le service utilisateur avec le mot de
             // passe haché et le statut d'administrateur
-            userService.addUser(username, hashedPassword, isAdmin);
+            userService.addUser(username, hashedPassword);
 
             return ResponseEntity.ok("Utilisateur ajouté avec succès");
 
