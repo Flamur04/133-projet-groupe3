@@ -15,6 +15,8 @@ public class Controller {
 
     private final ServiceApiRest1 serviceApiRest1;
 
+    private final ServiceApiRest serviceApiRest1;
+
     @Autowired
     public Controller(ServiceApiRest1 serviceApiRest1) {
         this.serviceApiRest1 = serviceApiRest1;

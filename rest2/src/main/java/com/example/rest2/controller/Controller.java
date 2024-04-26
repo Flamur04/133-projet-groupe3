@@ -83,8 +83,4 @@ public class Controller {
     public @ResponseBody List<Voyage> getAllVoyages() {
         return voyageService.getAllVoyages();
     }
-    
-
-    
-
 }
