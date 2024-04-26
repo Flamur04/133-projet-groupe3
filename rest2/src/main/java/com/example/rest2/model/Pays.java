@@ -19,7 +19,7 @@ public class Pays {
     @Column(name = "nom", length = 50)
     private String nom;
 
-    @Column(name = "version")
+    @Column(name = "version" , columnDefinition = "int default 0")
     private int version;
 
 

@@ -8,7 +8,8 @@ import com.example.rest2.repository.VoyageRepository;
 import com.example.rest2.services.PaysService;
 import com.example.rest2.services.VoyageService;
 
-import java.time.LocalDate;
+import 
+java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +30,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 
 @RestController
-@RequestMapping("/user")
+// @RequestMapping("/user")
 public class Controller {
 
     private final VoyageService voyageService;
@@ -44,7 +45,7 @@ public class Controller {
     // Handler pour GET
     @GetMapping("/")
     public String getNothing() {
-        return "";
+        return "API OK";
     }
 
     @PostMapping(path = "/addPays")
@@ -68,17 +69,17 @@ public class Controller {
     }
 
     @PostMapping(path = "/addVoyage")
-    public @ResponseBody String addNewVoyage(@RequestParam String name, @RequestParam String description, @RequestParam double prix, @RequestParam int nombreJour, @RequestParam String fkPays, @RequestParam int version, 
+    public @ResponseBody String addNewVoyage(@RequestParam String name, @RequestParam String description, @RequestParam double prix, @RequestParam String fkPays,  
     @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart, 
     @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateRetour) {
-        return voyageService.addNewVoyage(name, description, prix, nombreJour, fkPays, version, dateDepart, dateRetour);
+        return voyageService.addNewVoyage(name, description, prix, fkPays, dateDepart, dateRetour);
     }
 
     @PutMapping(path = "/updateVoyage/{id}")
-    public @ResponseBody String updateVoyage(@PathVariable Integer id, @RequestParam String name, @RequestParam String description, @RequestParam double prix, @RequestParam int nombreJour, @RequestParam String fkPays, @RequestParam int version, 
+    public @ResponseBody String updateVoyage(@PathVariable Integer id, @RequestParam String name, @RequestParam String description, @RequestParam double prix, @RequestParam String fkPays, @RequestParam int version, 
     @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart, 
     @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateRetour) {
-        return voyageService.updateVoyage(id, name, description, prix, nombreJour, fkPays, version, dateDepart, dateRetour);
+        return voyageService.updateVoyage(id, name, description, prix,  fkPays, version, dateDepart, dateRetour);
     }
 
     @DeleteMapping(path = "/deleteVoyage/{id}")

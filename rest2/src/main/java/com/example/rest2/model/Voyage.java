@@ -32,13 +32,10 @@ public class Voyage {
     @Column(name = "prix")
     private double prix;
 
-    @Column(name = "nombre_Jour")
-    private int nombreJour;
-
     @Column(name = "fkPays", length = 50)
     private String fkPays;
 
-    @Column(name = "version")
+    @Column(name = "version", columnDefinition = "int default 0")
     private int version;
 
     @Column(name = "date_depart")
@@ -70,9 +67,6 @@ public class Voyage {
         return prix;
     }
 
-    public int getNombreJour() {
-        return nombreJour;
-    }
 
     public String getFkPays() {
         return fkPays;
@@ -109,10 +103,6 @@ public class Voyage {
 
     public void setPrix(double prix) {
         this.prix = prix;
-    }
-
-    public void setNombreJour(int nombreJour) {
-        this.nombreJour = nombreJour;
     }
 
     public void setFkPays(String fkPays) {

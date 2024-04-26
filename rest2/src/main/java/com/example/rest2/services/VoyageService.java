@@ -24,14 +24,13 @@ public class VoyageService {
     }
 
     @Transactional
-    public String addNewVoyage(String name, String description, double prix, int nombreJour, String fkPays, int version, LocalDate dateDepart, LocalDate dateRetour) {
+    public String addNewVoyage(String name, String description, double prix,  String fkPays, LocalDate dateDepart, LocalDate dateRetour) {
         Voyage newVoyage = new Voyage();
         newVoyage.setNom(name);
         newVoyage.setDescription(description);
         newVoyage.setPrix(prix);
-        newVoyage.setNombreJour(nombreJour);
         newVoyage.setFkPays(fkPays);
-        newVoyage.setVersion(version);
+        newVoyage.setVersion(0);
         newVoyage.setDateDepart(dateDepart);
         newVoyage.setDateRetour(dateRetour);
         voyageRepository.save(newVoyage);
@@ -39,13 +38,12 @@ public class VoyageService {
     }
 
     @Transactional
-public String updateVoyage(Integer id, String name, String description, double prix, int nombreJour, String fkPays, int version, LocalDate dateDepart, LocalDate dateRetour) {
+public String updateVoyage(Integer id, String name, String description, double prix,  String fkPays, int version, LocalDate dateDepart, LocalDate dateRetour) {
     Voyage existingVoyage = voyageRepository.findById(id).orElse(null);
     if (existingVoyage != null) {
         existingVoyage.setNom(name);
         existingVoyage.setDescription(description);
         existingVoyage.setPrix(prix);
-        existingVoyage.setNombreJour(nombreJour);
         existingVoyage.setFkPays(fkPays);
         existingVoyage.setVersion(existingVoyage.getVersion() + 1);
         existingVoyage.setDateDepart(dateDepart);
