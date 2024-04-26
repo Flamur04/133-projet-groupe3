@@ -63,6 +63,16 @@ public class Controller {
         }
     }
 
+    // Handler pour GET
+    @GetMapping(path ="/getUsers")
+    public ResponseEntity<Iterable<User>> getUsers(HttpSession session) {
+        // Utilisez la session comme nécessaire
+        Iterable<User> users = userService.findAllUsers();;
+        return ResponseEntity.ok(users);
+    }
+
+
+
     /**
      * @param username
      * @param password

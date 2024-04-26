@@ -20,6 +20,18 @@ public class Controller {
         this.serviceApiRest1 = serviceApiRest1;
     }
 
+    @GetMapping("/getUsers")
+    public ResponseEntity<String> getUsers(HttpSession session) {
+        if (session.getAttribute("username") != null) {
+            // L'utilisateur est connecté, procéder à la récupération des utilisateurs
+            String users = serviceApiRest1.getUsers();
+            return ResponseEntity.ok(users);
+        } else {
+            // L'utilisateur n'est pas connecté, renvoyer une erreur non autorisée
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestParam String username,
             @RequestParam String password,
@@ -33,4 +45,17 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
         }
     }
+
+    @PostMapping("/addUser")
+    public ResponseEntity<String> addUser(@RequestParam String username,
+            @RequestParam String password) {
+        boolean added = serviceApiRest1.addUser(username, password);
+
+        if (added) {
+            return ResponseEntity.ok("User added: " + username);
+        } else {
+            return ResponseEntity.badRequest().body("Failed to add user");
+        }
+    }
+
 }

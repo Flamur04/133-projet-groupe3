@@ -1,5 +1,8 @@
 package com.example.rest1.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,13 @@ public class UserService {
         return user != null && user.getPassword().equals(password);
     }
 
+    public Iterable<User> findAllUsers() {
+        Iterable<User> users = userRepository.findAll();
+        List<User> usersList = new ArrayList<>();
+        users.forEach(usersList::add);
+        return usersList;
+    }
+
     @Transactional
     public User addUser(String username, String password) {
         // Vérifier si l'utilisateur existe déjà
@@ -38,7 +48,7 @@ public class UserService {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(password);
-    
+
         // Enregistrer le nouvel utilisateur dans la base de données
         return userRepository.save(newUser);
     }
