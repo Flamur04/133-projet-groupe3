@@ -27,7 +27,7 @@ public class UserService {
     }
 
     @Transactional
-    public User addUser(String username, String password, boolean admin) {
+    public User addUser(String username, String password) {
         // Vérifier si l'utilisateur existe déjà
         if (userRepository.findByUsername(username) != null) {
             throw new IllegalArgumentException("L'utilisateur existe déjà");
@@ -38,8 +38,7 @@ public class UserService {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(password);
-        newUser.setIsAdmin(admin);
-
+    
         // Enregistrer le nouvel utilisateur dans la base de données
         return userRepository.save(newUser);
     }
