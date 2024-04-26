@@ -1,4 +1,4 @@
-package com.example.apigateway.services;
+package main.java.com.example.apigateway.services;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +38,7 @@ public class ServiceApiRest1 {
         }
     }
 
-    public boolean addUser(String username, String password) {
+    public ResponseEntity<String> addUser(String username, String password) {
         String url = apiGatewayUrl + "/addUser";
 
         // Créer le corps de la requête avec les informations de l'utilisateur
@@ -48,14 +48,21 @@ public class ServiceApiRest1 {
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody);
 
         // Effectuer la requête POST
-        ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+        ResponseEntity<Void> response = restTemplate.postForEntity(url, requestEntity, Void.class);
 
-        return response.getStatusCode().is2xxSuccessful();
+        // Retourner la réponse avec le code de statut approprié et un message
+        if (response.getStatusCode().is2xxSuccessful()) {
+            // Succès (code de statut dans la plage des 2xx)
+            return ResponseEntity.ok("Utilisateur ajouté avec succès");
+        } else {
+            // Erreur (code de statut dans la plage des 4xx)
+            return ResponseEntity.badRequest().body("Échec de l'ajout de l'utilisateur");
+        }
     }
 
-    public boolean login(String username, String password) {
-        // Appel à votre API externe pour l'authentification
+    public ResponseEntity<String> login(String username, String password) {
         String url = apiGatewayUrl + "/login";
+
         // Préparer la requête (ajustez selon l'API que vous appelez)
         Map<String, String> credentials = new HashMap<>();
         credentials.put("username", username);
@@ -64,17 +71,31 @@ public class ServiceApiRest1 {
         // Effectuer l'appel API et recevoir la réponse => postFor peut être un getFor !
         ResponseEntity<String> response = restTemplate.postForEntity(url, credentials, String.class);
 
-        return response.getStatusCode().is2xxSuccessful();
+        // Retourner la réponse avec le code de statut approprié et un message
+        if (response.getStatusCode().is2xxSuccessful()) {
+            // Succès (code de statut dans la plage des 2xx)
+            return ResponseEntity.ok("Connecté");
+        } else {
+            // Erreur (code de statut dans la plage des 4xx)
+            return ResponseEntity.badRequest().body("Échec de l'authentification");
+        }
     }
 
-    public boolean logout() {
+    public ResponseEntity<String> logout() {
         // Appeler votre API Gateway pour gérer la déconnexion
         String url = apiGatewayUrl + "/logout";
 
-        // Effectuer la requête GET ou POST selon l'API Gateway
+        // Effectuer la requête POST pour la déconnexion
         ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
 
-        return response.getStatusCode().is2xxSuccessful();
+        // Retourner la réponse avec le code de statut approprié et un message
+        if (response.getStatusCode().is2xxSuccessful()) {
+            // Succès (code de statut dans la plage des 2xx)
+            return ResponseEntity.ok("Déconnexion réussie");
+        } else {
+            // Erreur (code de statut dans la plage des 4xx)
+            return ResponseEntity.badRequest().body("Échec de la déconnexion");
+        }
     }
 
     public boolean addReservation(Integer fk_voyage, Integer fk_user) {
