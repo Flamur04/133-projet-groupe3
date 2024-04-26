@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page de Connexion</title>
+    <!-- Ajout du CDN de Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .home-link {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 32px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen">
+ 
+    <div class="flex justify-center items-center h-full">
+        <div class="w-full max-w-xs">
+            <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <h2 class="text-center text-xl mb-4">Connexion</h2>
+               
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+                        Nom :
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           id="username"
+                           type="text"
+                           name="username"
+                           required
+                           placeholder="Nom d'utilisateur">
+                </div>
+               
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                        Mot de passe :
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           id="password"
+                           type="password"
+                           name="password"
+                           required
+                           placeholder="Mot de passe">
+                </div>
+
+                <div class="mb-6">
+                    <input class="mr-2 leading-tight" type="checkbox" id="isAdmin" name="isAdmin">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="isAdmin">
+                        Administrateur
+                    </label>
+                </div>
+               
+                <div class="flex items-center justify-between">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="submit">
+                        Se connecter
+                    </button>
+                    <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">S'enregistrer</a>
+                    <span id="loginError" class="text-red-500"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    
+    <!-- Ajout de l'emoji pour le lien vers la page d'accueil -->
+    <a href="../index.html" class="home-link text-blue-500 hover:text-blue-800">&#x1F3E0;</a>
+</body>
+</html>

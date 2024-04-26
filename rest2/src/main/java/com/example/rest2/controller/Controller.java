@@ -1,15 +1,11 @@
 package com.example.rest2.controller;
 
-
 import com.example.rest2.model.Pays;
 import com.example.rest2.model.Voyage;
-import com.example.rest2.repository.PaysRepository;
-import com.example.rest2.repository.VoyageRepository;
 import com.example.rest2.services.PaysService;
 import com.example.rest2.services.VoyageService;
 
-import 
-java.time.LocalDate;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -21,13 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import jakarta.servlet.http.HttpSession;
-import org.springframework.http.ResponseEntity;
 
 @RestController
 // @RequestMapping("/user")

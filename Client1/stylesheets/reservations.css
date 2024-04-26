@@ -1,0 +1,82 @@
+/* Ajouts et modifications CSS */
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('../images/image1.jpg');
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+    background-position: center;
+}
+
+header {
+    background-color: rgba(0, 0, 0, 0.7); /* Augmentation de l'opacité pour une meilleure lisibilité */
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+header nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+header nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+header nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.reservation {
+    background-color: rgba(255, 255, 255, 0.8); /* Arrière-plan semi-transparent pour les sections de réservation */
+    padding: 20px;
+    border-radius: 10px; /* Ajout de coins arrondis pour un aspect plus doux */
+    margin-bottom: 20px; /* Espacement entre les sections de réservation */
+}
+
+.reservation h2 {
+    color: #333; /* Couleur de texte légèrement assombrie pour plus de lisibilité */
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.reservation p {
+    margin-bottom: 10px;
+}
+
+.btn {
+    display: inline-block;
+    background-color: #f39c12;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    cursor: pointer; /* Curseur de la souris modifié pour indiquer l'interactivité */
+}
+
+.btn:hover {
+    background-color: #e67e22;
+}
+
+footer {
+    background-color: rgba(0, 0, 0, 0.7); /* Augmentation de l'opacité du footer */
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+}
