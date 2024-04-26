@@ -14,8 +14,7 @@ import javax.servlet.http.HttpSession;
 public class Controller {
 
     private final ServiceApiRest1 serviceApiRest1;
-
-    private final ServiceApiRest serviceApiRest1;
+    private final ServiceApiRest2 serviceApiRest2;
 
     @Autowired
     public Controller(ServiceApiRest1 serviceApiRest1) {
@@ -34,17 +33,39 @@ public class Controller {
         }
     }
 
+    @GetMapping("/getAllVoyages")
+    public ResponseEntity<String> getUsers(HttpSession session) {
+        if (session.getAttribute("username") != null) {
+            // L'utilisateur est connecté, procéder à la récupération des utilisateurs
+            String voyages = serviceApiRest2.getAllVoyages();
+            return ResponseEntity.ok(voyages);
+        } else {
+            // L'utilisateur n'est pas connecté, renvoyer une erreur non autorisée
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestParam String username,
             @RequestParam String password,
             HttpSession session) {
-        boolean authenticated = serviceApiRest1.authenticateUser(username, password);
-
+        boolean authenticated = serviceApiRest1.login(username, password);
         if (authenticated) {
             session.setAttribute("username", username);
             return ResponseEntity.ok("Logged in with " + username);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        boolean logout = serviceApiRest1.logout();
+        if (logout) {
+            session.invalidate();
+            return ResponseEntity.ok("Logged out");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error durant le logout !!");
         }
     }
 
@@ -57,6 +78,15 @@ public class Controller {
             return ResponseEntity.ok("User added: " + username);
         } else {
             return ResponseEntity.badRequest().body("Failed to add user");
+        }
+    }
+
+    @PostMapping("/addReservation")
+    public ResponseEntity<String> addReservation(@RequestParam Integer Fk_voyage, HttpSession session) {
+        boolean added = serviceApiRest1.addReservation(Fk_voyage, Fk_voyage);
+
+        if (added) {
+
         }
     }
 

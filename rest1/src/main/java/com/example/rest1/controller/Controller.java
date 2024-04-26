@@ -64,14 +64,13 @@ public class Controller {
     }
 
     // Handler pour GET
-    @GetMapping(path ="/getUsers")
+    @GetMapping(path = "/getUsers")
     public ResponseEntity<Iterable<User>> getUsers(HttpSession session) {
         // Utilisez la session comme nécessaire
-        Iterable<User> users = userService.findAllUsers();;
+        Iterable<User> users = userService.findAllUsers();
+        ;
         return ResponseEntity.ok(users);
     }
-
-
 
     /**
      * @param username
@@ -103,7 +102,6 @@ public class Controller {
     public ResponseEntity<String> logout(HttpSession session) {
         // Invalidates this session then unbinds any objects bound to it.
         session.invalidate();
-
         return ResponseEntity.ok("Déconnexion réussie");
     }
 
