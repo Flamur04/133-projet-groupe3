@@ -2,7 +2,6 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-image: url('../images/image1.jpg');
     margin: 0;
     padding: 0;
     background-size: cover;
@@ -10,7 +9,8 @@ body {
 }
 
 header {
-    background-color: rgba(0, 0, 0, 0.7); /* Augmentation de l'opacité pour une meilleure lisibilité */
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Augmentation de l'opacité pour une meilleure lisibilité */
     color: #fff;
     padding: 20px;
     text-align: center;
@@ -38,14 +38,18 @@ header nav ul li a {
 }
 
 .reservation {
-    background-color: rgba(255, 255, 255, 0.8); /* Arrière-plan semi-transparent pour les sections de réservation */
+    background-color: rgba(255, 255, 255, 0.8);
+    /* Arrière-plan semi-transparent pour les sections de réservation */
     padding: 20px;
-    border-radius: 10px; /* Ajout de coins arrondis pour un aspect plus doux */
-    margin-bottom: 20px; /* Espacement entre les sections de réservation */
+    border-radius: 10px;
+    /* Ajout de coins arrondis pour un aspect plus doux */
+    margin-bottom: 20px;
+    /* Espacement entre les sections de réservation */
 }
 
 .reservation h2 {
-    color: #333; /* Couleur de texte légèrement assombrie pour plus de lisibilité */
+    color: #333;
+    /* Couleur de texte légèrement assombrie pour plus de lisibilité */
     font-size: 24px;
     margin-bottom: 10px;
 }
@@ -62,7 +66,8 @@ header nav ul li a {
     padding: 10px 20px;
     border-radius: 5px;
     transition: background-color 0.3s ease;
-    cursor: pointer; /* Curseur de la souris modifié pour indiquer l'interactivité */
+    cursor: pointer;
+    /* Curseur de la souris modifié pour indiquer l'interactivité */
 }
 
 .btn:hover {
@@ -70,7 +75,8 @@ header nav ul li a {
 }
 
 footer {
-    background-color: rgba(0, 0, 0, 0.7); /* Augmentation de l'opacité du footer */
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Augmentation de l'opacité du footer */
     color: #fff;
     text-align: center;
     padding: 20px;

@@ -1,13 +1,17 @@
-package main.java.com.example.apigateway.services;
+package com.example.apigateway.services;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import com.example.apigateway.dto.UserDTO;
 
 @Service
 public class ServiceApiRest1 {
@@ -18,45 +22,23 @@ public class ServiceApiRest1 {
     @Autowired
     public ServiceApiRest1(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
+
     }
 
     public ResponseEntity<String> getUsers() {
         String url = apiGatewayUrl + "/getUsers";
-
-        // Effectuer la requête GET
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-
-        // Vérifier la réponse
-        if (response.getStatusCode().is2xxSuccessful()) {
-            // Traiter la réponse si nécessaire
-            // Convertir la réponse JSON en objet ou en Map pour vérification, ici simplifié
-            String responseBody = response.getBody();
-            return ResponseEntity.ok(response.getBody());
-        } else {
-            // Gérer les erreurs si nécessaire
-            return ResponseEntity.badRequest().body("Échec de la récupération des données");
-        }
+        return restTemplate.getForEntity(url, String.class);
     }
 
-    public ResponseEntity<String> addUser(String username, String password) {
+    public ResponseEntity<Void> addUser(String username, String password) {
         String url = apiGatewayUrl + "/addUser";
-
-        // Créer le corps de la requête avec les informations de l'utilisateur
-        String requestBody = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
-
-        // Créer l'entité HttpEntity avec le corps de la requête
-        HttpEntity<String> requestEntity = new HttpEntity<>(requestBody);
-
-        // Effectuer la requête POST
-        ResponseEntity<Void> response = restTemplate.postForEntity(url, requestEntity, Void.class);
-
-        // Retourner la réponse avec le code de statut approprié et un message
-        if (response.getStatusCode().is2xxSuccessful()) {
-            // Succès (code de statut dans la plage des 2xx)
-            return ResponseEntity.ok("Utilisateur ajouté avec succès");
-        } else {
-            // Erreur (code de statut dans la plage des 4xx)
-            return ResponseEntity.badRequest().body("Échec de l'ajout de l'utilisateur");
+        UserDTO userDTO = new UserDTO(username, password);
+        try {
+            restTemplate.postForEntity(url, userDTO, Void.class);
+            return ResponseEntity.ok().build(); // Utilisateur ajouté avec succès (HTTP 200)
+        } catch (HttpClientErrorException.BadRequest ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // Échec de l'ajout de l'utilisateur (HTTP //
+                                                                          // 400)
         }
     }
 
@@ -103,13 +85,30 @@ public class ServiceApiRest1 {
         String url = apiGatewayUrl + "/addReservation";
 
         // Préparer la requête (ajustez selon l'API que vous appelez)
-        Map<String, String> credentials = new HashMap<>();
-        credentials.put("Fk_voyage", fk_voyage);
-        credentials.put("Fk_user", fk_user);
+        Map<Integer, Integer> credentials = new HashMap<>();
+        // credentials.put("Fk_voyage", fk_voyage);
+        // credentials.put("Fk_user", fk_user);
         // Effectuer la requête GET ou POST selon l'API Gateway
         ResponseEntity<String> response = restTemplate.postForEntity(url, credentials, String.class);
 
         return response.getStatusCode().is2xxSuccessful();
+    }
+
+    public ResponseEntity<String> deleteReservation(Integer id) {
+        // Appeler votre API Gateway pour gérer la déconnexion
+        String url = apiGatewayUrl + "/deleteReservation";
+
+        // Effectuer la requête POST pour la déconnexion
+        ResponseEntity<String> response = restTemplate.postForEntity(url, id, String.class);
+
+        // Retourner la réponse avec le code de statut approprié et un message
+        if (response.getStatusCode().is2xxSuccessful()) {
+            // Succès (code de statut dans la plage des 2xx)
+            return ResponseEntity.ok("Rervation supprimée");
+        } else {
+            // Erreur (code de statut dans la plage des 4xx)
+            return ResponseEntity.badRequest().body("Error durant la suppression");
+        }
     }
 
 }

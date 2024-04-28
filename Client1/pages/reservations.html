@@ -3,45 +3,78 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mes Réservations</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="../images/albanie.png"> <!-- Balise pour mettre l'icone-->
+    <title>Mes Reservations</title>
     <link rel="stylesheet" href="../stylesheets/reservations.css">
+    <!-- Ajout de Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Style personnalisé pour les réservations */
+        .reservation {
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .reservation:hover {
+            background-color: #f3f4f6;
+            cursor: pointer;
+        }
+
+        /* Style personnalisé pour le titre */
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        /* Style personnalisé pour la liste */
+        .reservations {
+            margin-left: auto;
+            margin-right: auto;
+            /* Centrage horizontal */
+            width: 70%;
+            /* Largeur de la liste */
+        }
+    </style>
 </head>
 
-<body>
-    <header>
-        <h1>Mes Réservations</h1>
+<body class="pb-20">
+    <header class="mb-8">
+        <h1 class="mt-8 mb-4">DH DESTINATIONS</h1>
         <nav>
             <ul>
                 <li><a href="../index.html">Accueil</a></li>
                 <li><a href="../pages/destinations.html">Destinations</a></li>
-                <li><a href="../pages/reservations.html">Mes réservations</a></li>
+                <li><a href="#">Mes reservations</a></li>
                 <li><a href="../pages/login.html">Login</a></li>
             </ul>
         </nav>
     </header>
-    <main>
-        <section class="reservation">
-            <h2>Réservation 1</h2>
-            <p>Date de départ: 01/07/2024</p>
-            <p>Date de retour: 10/07/2024</p>
-            <p>Prix: $1000</p>
-            <p>Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <button class="delete-btn">Supprimer</button>
-            <button class="edit-btn">Modifier</button>
-        </section>
-        <section class="reservation">
-            <h2>Réservation 2</h2>
-            <p>Date de départ: 15/08/2024</p>
-            <p>Date de retour: 25/08/2024</p>
-            <p>Prix: $1500</p>
-            <p>Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <button class="delete-btn">Supprimer</button>
-            <button class="edit-btn">Modifier</button>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 DH DESTINATIONS</p>
+
+    <section class="reservations">
+        <div>
+            <h2 class="text-3xl mb-4">Mes Reservations</h2>
+            <ul>
+                <li class="reservation mb-2">Réservation 1</li>
+                <li class="reservation mb-2">Réservation 2</li>
+                <li class="reservation mb-2">Réservation 3</li>
+                <!-- Ajoutez plus de réservations si nécessaire -->
+            </ul>
+        </div>
+    </section>
+
+    <footer class="bg-black text-white text-center py-4 fixed bottom-0 w-full">
+        <button
+            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-4">
+            Supprimer
+        </button>
+        <button
+            class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            Modifier
+        </button>
     </footer>
 </body>
 
