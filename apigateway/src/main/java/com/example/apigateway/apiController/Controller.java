@@ -287,7 +287,4 @@ public ResponseEntity<String> getAllVoyages() {
         return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
     }
 }
-
-
-
 }

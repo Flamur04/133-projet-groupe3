@@ -98,13 +98,6 @@ public class Controller {
         return ResponseEntity.ok("Logged in with " + username);
     }
 
-    @PostMapping(path = "/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
-        // Invalidates this session then unbinds any objects bound to it.
-        session.invalidate();
-        return ResponseEntity.ok("Déconnexion réussie");
-    }
-
     // Handler pour GET
     @GetMapping("/")
     public ResponseEntity<String> getNothing(HttpSession session) {
