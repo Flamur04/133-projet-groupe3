@@ -6,19 +6,12 @@
  */
 
 // Importez la fonction getVoyages depuis votre fichier JavaScript où elle est définie
-import { getVoyages } from '../services/serviceHttp.js';
+import { getVoyages, ajouterReservations } from '../services/serviceHttp.js';
 
 $(document).ready(function () {
     var btnReserverVoyage = $("#btnReserverVoyage");
 
-    // Lorsque le bouton est cliqué, cette fonction anonyme est appelée.
-    btnReserverVoyage.click(function (event) {
-        // Affichez une alerte lorsque le bouton est cliqué
-        alert('Vous avez cliqué sur Réserver Voyage');
-    });
-
     afficherVoyages();
-
 });
 
 // Fonction pour afficher les voyages dans la page HTML
@@ -38,11 +31,18 @@ function afficherVoyages() {
                 // Ajoutez du contenu à la carte de voyage (par exemple, titre, image, description, etc.)
                 // Ici, vous pouvez ajouter les détails du voyage au contenu de la carte
                 carteVoyage.innerHTML = `
-                    <h2>${voyage.titre}</h2>
-                    <p>${voyage.description}</p>
-                    <!-- Ajoutez d'autres éléments de contenu en fonction de vos besoins -->
-
+                        <img src="${voyage.image}" alt="Image du voyage">
+                        <h2>${voyage.titre}</h2>
+                        <p>Date de départ: ${voyage.date_depart}</p>
+                        <p>Date de retour: ${voyage.date_retour}</p>
+                        <p>${voyage.description}</p>
+                        <p>Prix: ${voyage.prix}</p>
+                        <!-- Ajoutez d'autres éléments de contenu en fonction de vos besoins -->
                 `;
+
+                carteVoyage.addEventListener('dblclick', function () {
+                    poserQuestionReservation(voyage);
+                });
 
                 // Ajoutez la carte de voyage à la section des voyages
                 sectionVoyages.appendChild(carteVoyage);
@@ -55,6 +55,45 @@ function afficherVoyages() {
 }
 
 
+function poserQuestionReservation(voyage) {
+    // Vérifier si l'utilisateur est connecté
+    if (utilisateurEstConnecte()) {
+        // L'utilisateur est connecté, poser la question de réservation
+        var confirmation = confirm("Voulez-vous réserver ce voyage ?");
+        if (confirmation) {
+            // Si l'utilisateur clique sur "OK", appelez la méthode pour ajouter la réservation
+            var userId = recupererIdUtilisateurConnecte(); // Récupérer l'identifiant de l'utilisateur connecté depuis la session
+            ajouterReservations(voyage.fk_voyage, userId);
+        } else {
+            // Si l'utilisateur clique sur "Annuler", vous pouvez rediriger ou prendre d'autres mesures
+            // Dans ce cas, je vais simplement actualiser la page
+            window.location.href = "../../pages/destinations";
+        }
+    } else {
+        // L'utilisateur n'est pas connecté, vous pouvez le rediriger vers la page de connexion ou afficher un message
+        alert("Vous devez être connecté pour effectuer une réservation.");
+        // Rediriger vers la page de connexion
+        window.location.reload;
+    }
+}
+
+// Cette fonction vérifie si l'utilisateur est connecté en vérifiant l'état de la session
+function utilisateurEstConnecte() {
+    // Vérifiez si une session est active
+    if (sessionStorage.getItem('utilisateur')) {
+        // Une session est active, l'utilisateur est connecté
+        return true;
+    } else {
+        // Aucune session active, l'utilisateur n'est pas connecté
+        return false;
+    }
+}
+
+// Fonction pour récupérer l'identifiant de l'utilisateur connecté à partir de la session
+function recupererIdUtilisateurConnecte() {
+    // Récupérez l'identifiant de l'utilisateur depuis la session
+    return sessionStorage.getItem('fk_user');
+}
 
 // Attacher le gestionnaire d'événements au bouton "Réserver Voyage"
 /*document.getElementById('#btnReserverVoyage').addEventListener('click', handleReserverVoyage);*/

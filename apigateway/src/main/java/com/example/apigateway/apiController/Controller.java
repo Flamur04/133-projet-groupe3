@@ -62,6 +62,10 @@ public class Controller {
         // Vérifie le code de statut HTTP de la réponse retournée par
         // serviceApiRest1.login()
         if (authenticated.getStatusCode().is2xxSuccessful()) {
+            // Supposons que vous avez un moyen d'obtenir l'identifiant de l'utilisateur à partir du service
+            String fk_user = serviceApiRest1.getUserId(username); // C'est un exemple, adaptez selon votre logique
+            session.setAttribute("userId", userId);
+
             // Si l'authentification réussit, stocke le nom d'utilisateur dans la session et
             // retourne HTTP 200
             session.setAttribute("username", username);

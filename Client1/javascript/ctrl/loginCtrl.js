@@ -24,8 +24,7 @@ function handleLoginFormSubmit(event) {
             window.location.href = '../../pages/destinations.html';
         })
         .catch(error => {
-            // Affiche l'erreur de connexion dans l'élément span
-            document.getElementById('loginError').textContent = error.message;
+            alert('Erreur lors de la connexion: ' + error);
         });
 }
 
@@ -43,15 +42,21 @@ function handleAddUser() {
             window.location.href = '../../pages/login.html';
         })
         .catch(error => {
-            console.error('Erreur lors de l\'ajout de l\'utilisateur:', error);
+            alert('Erreur lors de l\'ajout de l\'utilisateur: ' + error);
         });
 }
 
-// Ajoute des écouteurs d'événement pour les interactions utilisateur
-document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.getElementById('login');
-    loginForm.addEventListener('submit', handleLoginFormSubmit);
+$(document).ready(function () {
+    var loginForm = $("#login");
+    var addUserButton = $("#signUp");
 
-    const addUserButton = document.getElementById('signUp');
-    addUserButton.addEventListener('click', handleAddUser);
+    // Lorsque le bouton est cliqué, cette fonction anonyme est appelée.
+    addUserButton.click(function (event) {
+        handleAddUser();
+    });
+
+    // Lorsque le bouton est cliqué, cette fonction anonyme est appelée.
+    loginForm.click(function (event) {
+        handleLoginFormSubmit();
+    });
 });

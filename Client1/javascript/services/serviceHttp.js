@@ -136,5 +136,5 @@ function ajouterReservations(voyagesIds, utilisateurId) {
 }
 
 // Exporter les fonctions nécessaires
-export { handleReserverVoyage };
+export { ajouterReservations };
 
