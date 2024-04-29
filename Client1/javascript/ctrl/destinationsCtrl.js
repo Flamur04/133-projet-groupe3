@@ -5,14 +5,9 @@
  * @version 1.0 / 28.04.2024
  */
 
-/**
- * Méthode "start" appelée après le chargement complet de la page
- */
-
 // Importe la fonction getVoyages depuis destinationsCtrl.js
 import { getVoyages, handleReserverVoyage } from '../services/serviceHttp.js';
 
-// Fonction pour afficher les voyages récupérés dans la page HTML
 function afficherVoyages(voyages) {
     const destinationsSection = document.querySelector('.destinations');
 
@@ -28,11 +23,13 @@ function afficherVoyages(voyages) {
                 <p>Date de Retour: ${voyage.dateRetour}</p>
                 <p>Prix: ${voyage.prix}</p>
                 <p>Description: ${voyage.description}</p>
+                <img src="${voyage.imageUrl}" alt="${voyage.destination}">
             </div>
         `;
         destinationsSection.appendChild(voyageElement);
     });
 }
+
 
 
 // Au chargement de la page, récupère les voyages et affiche-les

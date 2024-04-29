@@ -134,10 +134,10 @@ public class ServiceApiRest2 {
 }
 
 public ResponseEntity<String> updateVoyage(int id, String name, String description, int prix, String fkPays, int version, LocalDate dateDepart, LocalDate dateRetour) {
-    String url = "http://api-externe.com/updateVoyage/" + id;
+    String url = "http://api-externe.com/updateVoyage";
 
     // Créer le corps de la requête avec les informations du voyage
-    String requestBody = "{\"name\":\"" + name + "\", \"description\":\"" + description + "\", \"prix\":" + prix +", \"fkPays\":\"" + fkPays + "\", \"version\":" + version + ", \"dateDepart\":\"" + dateDepart + "\", \"dateRetour\":\"" + dateRetour + "\"}";
+    String requestBody = "{\"id\":" + id + ", \"name\":\"" + name + "\", \"description\":\"" + description + "\", \"prix\":" + prix +", \"fkPays\":\"" + fkPays + "\", \"version\":" + version + ", \"dateDepart\":\"" + dateDepart + "\", \"dateRetour\":\"" + dateRetour + "\"}";
 
     // Créer l'entité HttpEntity avec le corps de la requête
     HttpEntity<String> requestEntity = new HttpEntity<>(requestBody);
@@ -154,6 +154,7 @@ public ResponseEntity<String> updateVoyage(int id, String name, String descripti
         return ResponseEntity.badRequest().body("Échec de la mise à jour du voyage");
     }
 }
+
 
 public ResponseEntity<String> deleteVoyage(int id) {
     String url = "http://api-externe.com/deleteVoyage";
