@@ -18,7 +18,9 @@ import com.example.apigateway.dto.UserDTO;
 public class ServiceApiRest1 {
 
     private final RestTemplate restTemplate;
-    private final String apiGatewayUrl = "https://hotif.emf-informatique.ch/133-projet-groupe3/rest1/src/main/java/com/example/rest1/controller/Controller.java";
+    //private final String apiGatewayUrl = "https://hotif.emf-informatique.ch/133-projet-groupe3/rest1/src/main/java/com/example/rest1/controller/Controller.java";
+    private final String apiGatewayUrl = "http//localhost:8080";
+    
 
     @Autowired
     public ServiceApiRest1(RestTemplateBuilder restTemplateBuilder) {

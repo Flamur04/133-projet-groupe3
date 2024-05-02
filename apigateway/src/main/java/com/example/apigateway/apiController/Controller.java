@@ -41,18 +41,6 @@ public class Controller {
         }
     }
 
-    @GetMapping("/getAllVoyagesForUserConnected")
-    public ResponseEntity<String> getAllVoyages(HttpSession session) {
-        if (session.getAttribute("username") != null) {
-            // L'utilisateur est connecté, procéder à la récupération des voyages
-            ResponseEntity<String> voyages = serviceApiRest2.getAllVoyages();
-            return voyages; // Retourne directement la réponse de serviceApiRest2.getAllVoyages()
-        } else {
-            // L'utilisateur n'est pas connecté, renvoyer une erreur non autorisée
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-        }
-    }
-
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestParam String username,
             @RequestParam String password,
@@ -67,7 +55,7 @@ public class Controller {
             // Si l'authentification réussit, stocke le nom d'utilisateur dans la session et
             // retourne HTTP 200
             session.setAttribute("username", username);
-            return ResponseEntity.ok("Logged in with " + username);
+            return ResponseEntity.ok("ApiGateway Logged in with " + username);
         } else {
             // Si l'authentification échoue, retourne HTTP 400 avec le message d'erreur
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(authenticated.getBody());
@@ -129,6 +117,19 @@ public class Controller {
                     .body("Erreur lors de l'ajout de la réservation : " + e.getMessage());
         }
     }
+
+    @GetMapping("/getAllVoyagesForUserConnected")
+    public ResponseEntity<String> getAllVoyages(HttpSession session) {
+        if (session.getAttribute("username") != null) {
+            // L'utilisateur est connecté, procéder à la récupération des voyages
+            ResponseEntity<String> voyages = serviceApiRest2.getAllVoyages();
+            return voyages; // Retourne directement la réponse de serviceApiRest2.getAllVoyages()
+        } else {
+            // L'utilisateur n'est pas connecté, renvoyer une erreur non autorisée
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+        }
+    }
+
 
     @GetMapping("/getAllPays")
     public ResponseEntity<String> getAllPays() {
