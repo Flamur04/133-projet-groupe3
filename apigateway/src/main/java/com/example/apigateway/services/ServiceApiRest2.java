@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,8 @@ public class ServiceApiRest2 {
     private final RestTemplate restTemplate;
 
     @Autowired
-    public ServiceApiRest2(RestTemplate restTemplate) {
-
-        this.restTemplate = restTemplate;
+    public ServiceApiRest2(RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = restTemplateBuilder.build();
     }
 
     public ResponseEntity<String> getAllPays() {

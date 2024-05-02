@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,8 @@ public class ServiceApiRest1 {
     private final String apiGatewayUrl = "http://localhost:8080";
 
     @Autowired
-    public ServiceApiRest1(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-
+    public ServiceApiRest1(RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = restTemplateBuilder.build();
     }
 
     public ResponseEntity<String> getUsers() {
