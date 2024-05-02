@@ -37,12 +37,37 @@ public class Controller {
         return responseEntity;
     }
 
-
     @GetMapping("/getUsers")
     public ResponseEntity<String> getUsers(HttpSession session) {
-        ResponseEntity<String> responseEntity = serviceApiRest1.getUsers();
-        // Renvoyer la réponse du service REST1 directement au client
-        return responseEntity;
+        // Vérifier si l'utilisateur est connecté
+        if (session.getAttribute("username") != null) {
+            // L'utilisateur est connecté, procéder à la récupération des utilisateurs
+            ResponseEntity<String> getUser = serviceApiRest1.getUsers();
+            if (getUser.getStatusCode().is2xxSuccessful()) {
+                return ResponseEntity.ok(getUser.getBody());
+            } else {
+                // Si l'authentification échoue, retourne HTTP 400 avec le message d'erreur
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getUser.getBody());
+            }
+        } else {
+            // L'utilisateur n'est pas connecté, renvoyer une erreur non autorisée
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Utilisateur non connecté");
+        }
+    }
+
+    @PostMapping("/addUser")
+    public ResponseEntity<String> addUser(@RequestParam String username,
+            @RequestParam String password) {
+        try {
+            // Ajoute l'utilisateur en utilisant le service approprié
+            serviceApiRest1.addUser(username, password);
+            // Retourne HTTP 200 en cas de succès de l'ajout de l'utilisateur
+            return ResponseEntity.ok("Utilisateur ajouté avec succès");
+        } catch (Exception e) {
+            // Retourne HTTP 400 en cas d'erreur lors de l'ajout de l'utilisateur
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Erreur lors de l'ajout de l'utilisateur : " + e.getMessage());
+        }
     }
 
     @PostMapping("/login")
@@ -51,16 +76,10 @@ public class Controller {
             HttpSession session) {
         ResponseEntity<String> authenticated = serviceApiRest1.login(username, password);
         if (authenticated.getStatusCode().is2xxSuccessful()) {
-
-            // Supposons que vous avez un moyen d'obtenir l'identifiant de l'utilisateur à
-            // partir du service
-            // String fk_user = serviceApiRest1.getUserId(username);
-            // session.setAttribute("userId", userId);
-
             // Si l'authentification réussit, stocke le nom d'utilisateur dans la session et
             // retourne HTTP 200
             session.setAttribute("username", username);
-            return ResponseEntity.ok("ApiGateway Logged in with " + username);
+            return ResponseEntity.ok("ApiGateway Logged in with " + authenticated.getBody());
         } else {
             // Si l'authentification échoue, retourne HTTP 400 avec le message d'erreur
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(authenticated.getBody());
@@ -78,21 +97,6 @@ public class Controller {
             // Retourne HTTP 400 en cas d'erreur lors de la déconnexion
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Erreur lors de la déconnexion : " + e.getMessage());
-        }
-    }
-
-    @PostMapping("/addUser")
-    public ResponseEntity<String> addUser(@RequestParam String username,
-            @RequestParam String password) {
-        try {
-            // Ajoute l'utilisateur en utilisant le service approprié
-            serviceApiRest1.addUser(username, password);
-            // Retourne HTTP 200 en cas de succès de l'ajout de l'utilisateur
-            return ResponseEntity.ok("Utilisateur ajouté avec succès");
-        } catch (Exception e) {
-            // Retourne HTTP 400 en cas d'erreur lors de l'ajout de l'utilisateur
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Erreur lors de l'ajout de l'utilisateur : " + e.getMessage());
         }
     }
 
