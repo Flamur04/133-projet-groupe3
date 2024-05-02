@@ -46,6 +46,13 @@ public class Controller {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // Handler pour GET
+    @GetMapping("/")
+    public ResponseEntity<String> getNothing(HttpSession session) {
+        // Utilisez la session comme nécessaire
+        return ResponseEntity.ok("Api ok");
+    }
+
     @PostMapping(path = "addUser")
     public ResponseEntity<String> addUser(@RequestParam String username, @RequestParam String password) {
         try {
@@ -68,7 +75,6 @@ public class Controller {
     public ResponseEntity<Iterable<User>> getUsers(HttpSession session) {
         // Utilisez la session comme nécessaire
         Iterable<User> users = userService.findAllUsers();
-        ;
         return ResponseEntity.ok(users);
     }
 
@@ -96,13 +102,6 @@ public class Controller {
         session.setAttribute("username", username);
 
         return ResponseEntity.ok("Logged in with " + username);
-    }
-
-    // Handler pour GET
-    @GetMapping("/")
-    public ResponseEntity<String> getNothing(HttpSession session) {
-        // Utilisez la session comme nécessaire
-        return ResponseEntity.ok("Api ok");
     }
 
     @PostMapping(path = "/addReservation")

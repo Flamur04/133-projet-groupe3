@@ -30,15 +30,19 @@ public class Controller {
         this.serviceApiRest2 = serviceApiRest2;
     }
 
+    @GetMapping("/")
+    public ResponseEntity<String> getNothing() {
+        ResponseEntity<String> responseEntity = serviceApiRest1.getNothing();
+        // Renvoyer la réponse du service REST1 directement au client
+        return responseEntity;
+    }
+
+
     @GetMapping("/getUsers")
     public ResponseEntity<String> getUsers(HttpSession session) {
-        if (session.getAttribute("username") != null) {
-            // L'utilisateur est connecté, procéder à la récupération des utilisateurs
-            return serviceApiRest1.getUsers(); // Retourne directement la réponse de serviceApiRest1.getUsers()
-        } else {
-            // L'utilisateur n'est pas connecté, renvoyer une erreur non autorisée
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-        }
+        ResponseEntity<String> responseEntity = serviceApiRest1.getUsers();
+        // Renvoyer la réponse du service REST1 directement au client
+        return responseEntity;
     }
 
     @PostMapping("/login")
@@ -47,10 +51,11 @@ public class Controller {
             HttpSession session) {
         ResponseEntity<String> authenticated = serviceApiRest1.login(username, password);
         if (authenticated.getStatusCode().is2xxSuccessful()) {
-            
-            // Supposons que vous avez un moyen d'obtenir l'identifiant de l'utilisateur à partir du service
-            //String fk_user = serviceApiRest1.getUserId(username); 
-            //session.setAttribute("userId", userId);
+
+            // Supposons que vous avez un moyen d'obtenir l'identifiant de l'utilisateur à
+            // partir du service
+            // String fk_user = serviceApiRest1.getUserId(username);
+            // session.setAttribute("userId", userId);
 
             // Si l'authentification réussit, stocke le nom d'utilisateur dans la session et
             // retourne HTTP 200
@@ -130,7 +135,6 @@ public class Controller {
         }
     }
 
-
     @GetMapping("/getAllPays")
     public ResponseEntity<String> getAllPays() {
         try {
@@ -172,122 +176,128 @@ public class Controller {
     }
 
     @PutMapping("/updatePays/{id}")
-public ResponseEntity<String> updatePays(@PathVariable int id, @RequestParam String name) {
-    try {
-        // Appelle la méthode du service avec l'ID et le nom du pays
-        ResponseEntity<String> response = serviceApiRest2.updatePays(id, name);
+    public ResponseEntity<String> updatePays(@PathVariable int id, @RequestParam String name) {
+        try {
+            // Appelle la méthode du service avec l'ID et le nom du pays
+            ResponseEntity<String> response = serviceApiRest2.updatePays(id, name);
 
-        // Vérifie si la réponse est réussie (code d'état 200)
-        if (response.getStatusCode().is2xxSuccessful()) {
-            // Retourne HTTP 200 avec le message de succès en cas de succès
-            return ResponseEntity.ok("Pays mis à jour avec succès");
-        } else {
-            // Retourne HTTP 400 avec un message d'erreur en cas d'échec
-            return ResponseEntity.badRequest().body("Échec de la mise à jour du pays");
+            // Vérifie si la réponse est réussie (code d'état 200)
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Retourne HTTP 200 avec le message de succès en cas de succès
+                return ResponseEntity.ok("Pays mis à jour avec succès");
+            } else {
+                // Retourne HTTP 400 avec un message d'erreur en cas d'échec
+                return ResponseEntity.badRequest().body("Échec de la mise à jour du pays");
+            }
+        } catch (Exception e) {
+            // Retourne HTTP 400 avec un message d'erreur en cas d'exception
+            return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
         }
-    } catch (Exception e) {
-        // Retourne HTTP 400 avec un message d'erreur en cas d'exception
-        return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
     }
-}
 
-@DeleteMapping("/deletePays/{id}")
-public ResponseEntity<String> deletePays(@PathVariable int id) {
-    try {
-        // Appelle la méthode du service avec l'ID du pays
-        ResponseEntity<String> response = serviceApiRest2.deletePays(id);
+    @DeleteMapping("/deletePays/{id}")
+    public ResponseEntity<String> deletePays(@PathVariable int id) {
+        try {
+            // Appelle la méthode du service avec l'ID du pays
+            ResponseEntity<String> response = serviceApiRest2.deletePays(id);
 
-        // Vérifie si la réponse est réussie (code d'état 200)
-        if (response.getStatusCode().is2xxSuccessful()) {
-            // Retourne HTTP 200 avec le message de succès en cas de succès
-            return ResponseEntity.ok("Pays supprimé avec succès");
-        } else {
-            // Retourne HTTP 400 avec un message d'erreur en cas d'échec
-            return ResponseEntity.badRequest().body("Échec de la suppression du pays");
+            // Vérifie si la réponse est réussie (code d'état 200)
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Retourne HTTP 200 avec le message de succès en cas de succès
+                return ResponseEntity.ok("Pays supprimé avec succès");
+            } else {
+                // Retourne HTTP 400 avec un message d'erreur en cas d'échec
+                return ResponseEntity.badRequest().body("Échec de la suppression du pays");
+            }
+        } catch (Exception e) {
+            // Retourne HTTP 400 avec un message d'erreur en cas d'exception
+            return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
         }
-    } catch (Exception e) {
-        // Retourne HTTP 400 avec un message d'erreur en cas d'exception
-        return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
     }
-}
 
-@PostMapping("/addNewVoyage")
-public ResponseEntity<String> addNewVoyage(@RequestParam String name, @RequestParam String description, @RequestParam int prix, @RequestParam String fkPays, @RequestParam LocalDate dateDepart, @RequestParam LocalDate dateRetour) {
-    try {
-        // Appelle la méthode du service avec les informations du voyage
-        ResponseEntity<String> response = serviceApiRest2.addNewVoyage(name, description, prix, fkPays, dateDepart, dateRetour);
+    @PostMapping("/addNewVoyage")
+    public ResponseEntity<String> addNewVoyage(@RequestParam String name, @RequestParam String description,
+            @RequestParam int prix, @RequestParam String fkPays, @RequestParam LocalDate dateDepart,
+            @RequestParam LocalDate dateRetour) {
+        try {
+            // Appelle la méthode du service avec les informations du voyage
+            ResponseEntity<String> response = serviceApiRest2.addNewVoyage(name, description, prix, fkPays, dateDepart,
+                    dateRetour);
 
-        // Vérifie si la réponse est réussie (code d'état 200)
-        if (response.getStatusCode().is2xxSuccessful()) {
-            // Retourne HTTP 200 avec le message de succès en cas de succès
-            return ResponseEntity.ok("Voyage ajouté avec succès");
-        } else {
-            // Retourne HTTP 400 avec un message d'erreur en cas d'échec
-            return ResponseEntity.badRequest().body("Échec de l'ajout du voyage");
+            // Vérifie si la réponse est réussie (code d'état 200)
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Retourne HTTP 200 avec le message de succès en cas de succès
+                return ResponseEntity.ok("Voyage ajouté avec succès");
+            } else {
+                // Retourne HTTP 400 avec un message d'erreur en cas d'échec
+                return ResponseEntity.badRequest().body("Échec de l'ajout du voyage");
+            }
+        } catch (Exception e) {
+            // Retourne HTTP 400 avec un message d'erreur en cas d'exception
+            return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
         }
-    } catch (Exception e) {
-        // Retourne HTTP 400 avec un message d'erreur en cas d'exception
-        return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
     }
-}
 
-@PutMapping("/updateVoyage/{id}")
-public ResponseEntity<String> updateVoyage(@PathVariable int id, @RequestParam String name, @RequestParam String description, @RequestParam int prix, @RequestParam String fkPays, @RequestParam int version, @RequestParam LocalDate dateDepart, @RequestParam LocalDate dateRetour) {
-    try {
-        // Appelle la méthode du service avec les informations du voyage
-        ResponseEntity<String> response = serviceApiRest2.updateVoyage(id, name, description, prix, fkPays, version, dateDepart, dateRetour);
+    @PutMapping("/updateVoyage/{id}")
+    public ResponseEntity<String> updateVoyage(@PathVariable int id, @RequestParam String name,
+            @RequestParam String description, @RequestParam int prix, @RequestParam String fkPays,
+            @RequestParam int version, @RequestParam LocalDate dateDepart, @RequestParam LocalDate dateRetour) {
+        try {
+            // Appelle la méthode du service avec les informations du voyage
+            ResponseEntity<String> response = serviceApiRest2.updateVoyage(id, name, description, prix, fkPays, version,
+                    dateDepart, dateRetour);
 
-        // Vérifie si la réponse est réussie (code d'état 200)
-        if (response.getStatusCode().is2xxSuccessful()) {
-            // Retourne HTTP 200 avec le message de succès en cas de succès
-            return ResponseEntity.ok("Voyage mis à jour avec succès");
-        } else {
-            // Retourne HTTP 400 avec un message d'erreur en cas d'échec
-            return ResponseEntity.badRequest().body("Échec de la mise à jour du voyage");
+            // Vérifie si la réponse est réussie (code d'état 200)
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Retourne HTTP 200 avec le message de succès en cas de succès
+                return ResponseEntity.ok("Voyage mis à jour avec succès");
+            } else {
+                // Retourne HTTP 400 avec un message d'erreur en cas d'échec
+                return ResponseEntity.badRequest().body("Échec de la mise à jour du voyage");
+            }
+        } catch (Exception e) {
+            // Retourne HTTP 400 avec un message d'erreur en cas d'exception
+            return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
         }
-    } catch (Exception e) {
-        // Retourne HTTP 400 avec un message d'erreur en cas d'exception
-        return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
     }
-}
 
-@DeleteMapping("/deleteVoyage/{id}")
-public ResponseEntity<String> deleteVoyage(@PathVariable int id) {
-    try {
-        // Appelle la méthode du service avec l'ID du voyage
-        ResponseEntity<String> response = serviceApiRest2.deleteVoyage(id);
+    @DeleteMapping("/deleteVoyage/{id}")
+    public ResponseEntity<String> deleteVoyage(@PathVariable int id) {
+        try {
+            // Appelle la méthode du service avec l'ID du voyage
+            ResponseEntity<String> response = serviceApiRest2.deleteVoyage(id);
 
-        // Vérifie si la réponse est réussie (code d'état 200)
-        if (response.getStatusCode().is2xxSuccessful()) {
-            // Retourne HTTP 200 avec le message de succès en cas de succès
-            return ResponseEntity.ok("Voyage supprimé avec succès");
-        } else {
-            // Retourne HTTP 400 avec un message d'erreur en cas d'échec
-            return ResponseEntity.badRequest().body("Échec de la suppression du voyage");
+            // Vérifie si la réponse est réussie (code d'état 200)
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Retourne HTTP 200 avec le message de succès en cas de succès
+                return ResponseEntity.ok("Voyage supprimé avec succès");
+            } else {
+                // Retourne HTTP 400 avec un message d'erreur en cas d'échec
+                return ResponseEntity.badRequest().body("Échec de la suppression du voyage");
+            }
+        } catch (Exception e) {
+            // Retourne HTTP 400 avec un message d'erreur en cas d'exception
+            return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
         }
-    } catch (Exception e) {
-        // Retourne HTTP 400 avec un message d'erreur en cas d'exception
-        return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
     }
-}
 
-@GetMapping("/getAllVoyages")
-public ResponseEntity<String> getAllVoyages() {
-    try {
-        // Appelle la méthode du service
-        ResponseEntity<String> response = serviceApiRest2.getAllVoyages();
+    @GetMapping("/getAllVoyages")
+    public ResponseEntity<String> getAllVoyages() {
+        try {
+            // Appelle la méthode du service
+            ResponseEntity<String> response = serviceApiRest2.getAllVoyages();
 
-        // Vérifie si la réponse est réussie (code d'état 200)
-        if (response.getStatusCode().is2xxSuccessful()) {
-            // Retourne HTTP 200 avec le corps de la réponse en cas de succès
-            return ResponseEntity.ok(response.getBody());
-        } else {
-            // Retourne HTTP 400 avec un message d'erreur en cas d'échec
-            return ResponseEntity.badRequest().body("Échec de la récupération des données");
+            // Vérifie si la réponse est réussie (code d'état 200)
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Retourne HTTP 200 avec le corps de la réponse en cas de succès
+                return ResponseEntity.ok(response.getBody());
+            } else {
+                // Retourne HTTP 400 avec un message d'erreur en cas d'échec
+                return ResponseEntity.badRequest().body("Échec de la récupération des données");
+            }
+        } catch (Exception e) {
+            // Retourne HTTP 400 avec un message d'erreur en cas d'exception
+            return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
         }
-    } catch (Exception e) {
-        // Retourne HTTP 400 avec un message d'erreur en cas d'exception
-        return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
     }
-}
 }

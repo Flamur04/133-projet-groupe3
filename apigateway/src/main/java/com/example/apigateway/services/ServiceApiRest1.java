@@ -18,13 +18,16 @@ import com.example.apigateway.dto.UserDTO;
 public class ServiceApiRest1 {
 
     private final RestTemplate restTemplate;
-    //private final String apiGatewayUrl = "https://hotif.emf-informatique.ch/133-projet-groupe3/rest1/src/main/java/com/example/rest1/controller/Controller.java";
-    private final String apiGatewayUrl = "http//localhost:8080";
-    
+    private final String apiGatewayUrl = "http://localhost:8081";
 
     @Autowired
     public ServiceApiRest1(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
+    }
+
+    public ResponseEntity<String> getNothing() {
+        String url = apiGatewayUrl + "/";
+        return restTemplate.getForEntity(url, String.class);
     }
 
     public ResponseEntity<String> getUsers() {
