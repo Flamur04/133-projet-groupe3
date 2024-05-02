@@ -41,7 +41,7 @@ public class Controller {
         }
     }
 
-    @GetMapping("/getAllVoyages")
+    @GetMapping("/getAllVoyagesForUserConnected")
     public ResponseEntity<String> getAllVoyages(HttpSession session) {
         if (session.getAttribute("username") != null) {
             // L'utilisateur est connecté, procéder à la récupération des voyages
