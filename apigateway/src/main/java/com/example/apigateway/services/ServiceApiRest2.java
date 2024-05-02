@@ -11,24 +11,27 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 public class ServiceApiRest2 {
     private final RestTemplate restTemplate;
+    private final String apiGatewayUrl = "http//localhost:8080";
 
     @Autowired
     public ServiceApiRest2(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
     }
 
+    @GetMapping(path = "/getAllPays")
     public ResponseEntity<String> getAllPays() {
-        String url = "http://api-externe.com/getAllPays";
-
+        String url = apiGatewayUrl + "/getAllPays";
+    
         try {
             // Effectuer une requête GET
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-
+    
             // Vérifier si la réponse est réussie (code d'état 200)
             if (response.getStatusCode().is2xxSuccessful()) {
                 // Traiter la réponse si nécessaire
@@ -40,12 +43,14 @@ public class ServiceApiRest2 {
             }
         } catch (Exception e) {
             // Gérer les exceptions (par exemple, erreurs réseau)
+            e.printStackTrace(); // Ajoutez cette ligne pour imprimer la trace de la pile d'exceptions
             return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
         }
     }
+    
 
     public ResponseEntity<String> addNewPays(String name) {
-        String url = "http://api-externe.com/addPays";
+        String url = apiGatewayUrl + "/addPays";
 
         // Créer le corps de la requête avec les informations du pays
         String requestBody = "{\"name\":\"" + name + "\"}";
@@ -68,7 +73,7 @@ public class ServiceApiRest2 {
 
 
     public ResponseEntity<String> updatePays( int id, String name) {
-        String url = "http://api-externe.com/updatePays/" + id;
+        String url = apiGatewayUrl + "/updatePays/" + id;
 
         // Créer le corps de la requête avec les informations du pays
         String requestBody = "{\"name\":\"" + name + "\"}";
@@ -90,7 +95,7 @@ public class ServiceApiRest2 {
     }
 
     public ResponseEntity<String> deletePays(int id) {
-        String url = "http://api-externe.com/deletePays";
+        String url = apiGatewayUrl + "/deletePays";
 
         // Créer le corps de la requête avec l'ID du pays à supprimer
         String requestBody = "{\"id\":\"" + id + "\"}";
@@ -112,7 +117,7 @@ public class ServiceApiRest2 {
     }
 
     public ResponseEntity<String> addNewVoyage(String name, String description, int prix, String fkPays, LocalDate dateDepart, LocalDate dateRetour) {
-    String url = "http://api-externe.com/addVoyage";
+    String url = apiGatewayUrl + "/addVoyage";
 
     // Créer le corps de la requête avec les informations du voyage
     String requestBody = "{\"name\":\"" + name + "\", \"description\":\"" + description + "\", \"prix\":" + prix + ", \"fkPays\":\"" + fkPays + "\", \"dateDepart\":\"" + dateDepart + "\", \"dateRetour\":\"" + dateRetour + "\"}";
@@ -134,7 +139,7 @@ public class ServiceApiRest2 {
 }
 
 public ResponseEntity<String> updateVoyage(int id, String name, String description, int prix, String fkPays, int version, LocalDate dateDepart, LocalDate dateRetour) {
-    String url = "http://api-externe.com/updateVoyage";
+    String url = apiGatewayUrl + "/updateVoyage";
 
     // Créer le corps de la requête avec les informations du voyage
     String requestBody = "{\"id\":" + id + ", \"name\":\"" + name + "\", \"description\":\"" + description + "\", \"prix\":" + prix +", \"fkPays\":\"" + fkPays + "\", \"version\":" + version + ", \"dateDepart\":\"" + dateDepart + "\", \"dateRetour\":\"" + dateRetour + "\"}";
@@ -157,7 +162,7 @@ public ResponseEntity<String> updateVoyage(int id, String name, String descripti
 
 
 public ResponseEntity<String> deleteVoyage(int id) {
-    String url = "http://api-externe.com/deleteVoyage";
+    String url = apiGatewayUrl +  "/deleteVoyage";
 
     // Créer le corps de la requête avec l'ID du voyage à supprimer
     String requestBody = "{\"id\":\"" + id + "\"}";
@@ -179,7 +184,7 @@ public ResponseEntity<String> deleteVoyage(int id) {
 }
 
 public ResponseEntity<String> getAllVoyages() {
-    String url = "http://api-externe.com/getAllVoyages";
+    String url = apiGatewayUrl + "/getAllVoyages";
 
     try {
         // Effectuer une requête GET
