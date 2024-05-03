@@ -1,6 +1,9 @@
 package com.example.apigateway.apiController;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +76,7 @@ public class Controller {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String username,
+    public ResponseEntity<Map<String, Object>> login(@RequestParam String username,
             @RequestParam String password,
             HttpSession session) {
         try {
@@ -93,14 +96,22 @@ public class Controller {
                 session.setAttribute("username", responseUsername);
                 session.setAttribute("fk_user", responseId);
 
-                return ResponseEntity.ok("Connexion réussie");
+                // Création d'un Map pour renvoyer en tant que JSON
+                Map<String, Object> response = new HashMap<>();
+                response.put("message", "Connexion réussie");
+                response.put("username", responseUsername);
+                response.put("id", responseId);
+
+                return ResponseEntity.ok(response);
+
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Identifiants invalides");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Collections.singletonMap("error", "Identifiants invalides"));
             }
         } catch (Exception e) {
             // Retourne HTTP 400 en cas d'erreur lors de la déconnexion
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Erreur lors durant le login : " + e.getMessage());
+                    .body(Collections.singletonMap("error", "Erreur lors durant le login : " + e.getMessage()));
         }
     }
 
@@ -121,24 +132,56 @@ public class Controller {
     @PostMapping("/addReservation")
     public ResponseEntity<String> addReservation(@RequestParam Integer Fk_voyage, HttpSession session) {
         try {
-            if (session.getAttribute("username") == null) {
-                // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-            }
+            /*
+             * if (session.getAttribute("username") == null) {
+             * // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
+             * return
+             * ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+             * }
+             */
 
             // Récupère l'ID de l'utilisateur à partir de la session
             Integer fk_user = (Integer) session.getAttribute("fk_user");
 
             // Ajoute la réservation en utilisant le service approprié avec les IDs du
             // voyage et de l'utilisateur
-            serviceApiRest1.addReservation(Fk_voyage, fk_user);
+            ResponseEntity<String> response = serviceApiRest1.addReservation(Fk_voyage, 9);
 
-            // Retourne HTTP 200 en cas de succès de l'ajout de la réservation
-            return ResponseEntity.ok("Réservation ajoutée avec succès");
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Retourne HTTP 200 avec le corps de la réponse en cas de succès
+                return ResponseEntity.ok(response.getBody());
+            } else {
+                // Retourne HTTP 400 avec un message d'erreur en cas d'échec
+                return ResponseEntity.badRequest().body(response.getBody());
+            }
+
         } catch (Exception e) {
             // Retourne HTTP 400 en cas d'erreur lors de l'ajout de la réservation
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Erreur lors de l'ajout de la réservation : " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/deleteReservation")
+    public ResponseEntity<String> deleteReservation(@RequestParam Integer id) {
+        try {
+
+            // Ajoute la réservation en utilisant le service approprié avec les IDs du
+            // voyage et de l'utilisateur
+            ResponseEntity<String> response = serviceApiRest1.deleteReservation(id);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Retourne HTTP 200 avec le corps de la réponse en cas de succès
+                return ResponseEntity.ok(response.getBody());
+            } else {
+                // Retourne HTTP 400 avec un message d'erreur en cas d'échec
+                return ResponseEntity.badRequest().body(response.getBody());
+            }
+
+        } catch (Exception e) {
+            // Retourne HTTP 400 en cas d'erreur lors de l'ajout de la réservation
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
         }
     }
 

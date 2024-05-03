@@ -6,5 +6,8 @@ import com.example.rest1.model.User;
 
 public interface UserRepository extends CrudRepository<User, Long> {
     User findByUsername(String username);
-    User save(User user);;
+
+    User save(User user);
+
+    User findByid(Integer id);
 }

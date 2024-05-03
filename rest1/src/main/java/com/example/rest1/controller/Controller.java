@@ -103,29 +103,34 @@ public class Controller {
     }
 
     @PostMapping(path = "/addReservation")
-    public ResponseEntity<String> addReservation(@RequestParam Integer Fk_voyage, @RequestParam Integer Fk_user) {
+    public ResponseEntity<String> addReservation(@RequestParam Integer fk_voyage, @RequestParam Integer fk_user) {
         try {
-            // Récupérer le voyage correspondant à l'ID Fk_voyage
-            /*
-             * Reservation voyage = (Reservation)
-             * reservationService.getVoyageById(Fk_voyage);
-             * if (voyage == null) {
-             * return ResponseEntity.badRequest().body("Le voyage avec l'ID " + Fk_voyage +
-             * " n'existe pas");
-             * }
-             */
 
             // Créer une nouvelle réservation
             Reservation reservation = new Reservation();
-            reservation.setUser(Fk_user);
-            reservation.setVoyage(Fk_voyage);
 
-            // Ajouter la réservation en utilisant le service de réservation
-            reservationService.addReservation(reservation);
-
-            return ResponseEntity.ok("Réservation ajoutée avec succès");
+            reservation.setUser(userService.getUserById(fk_user));
+            reservation.setVoyage(fk_voyage);
+            if (reservation != null) {
+                // Ajouter la réservation en utilisant le service de réservation
+                reservationService.addReservation(reservation);
+                return ResponseEntity.ok("Réservation ajoutée avec succès");
+            } else {
+                return ResponseEntity.ok("ERREUR !!");
+            }
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping(path = "/searchUser")
+    public ResponseEntity<User> searchUser(@RequestParam Integer id) {
+        try {
+            User user = userService.getUserById(id);
+
+            return ResponseEntity.ok(user);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
@@ -158,7 +163,7 @@ public class Controller {
             }
 
             // Définir l'utilisateur pour la réservation
-            reservation.setUser(3);
+            reservation.setUser(user);
 
             // Modifier la réservation en utilisant le service de réservation
             reservationService.modifieReservation(reservation);

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-
 @Service
 public class ServiceApiRest1 {
 
@@ -46,7 +45,7 @@ public class ServiceApiRest1 {
     public ResponseEntity<String> addUser(@RequestParam String username, @RequestParam String password) {
         String url = apiGatewayUrl + "/addUser";
 
-        //User userDTO = new User(username, password);
+        // User userDTO = new User(username, password);
 
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
@@ -59,7 +58,7 @@ public class ServiceApiRest1 {
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
             // Vérifier la réponse
-            if (response.getStatusCode().is2xxSuccessful()) { 
+            if (response.getStatusCode().is2xxSuccessful()) {
                 // Traitement réussi
                 return ResponseEntity.ok(response.getBody());
             } else {
@@ -145,16 +144,26 @@ public class ServiceApiRest1 {
         // Appeler votre API Gateway pour gérer la déconnexion
         String url = apiGatewayUrl + "/deleteReservation";
 
-        // Effectuer la requête POST pour la déconnexion
-        ResponseEntity<String> response = restTemplate.postForEntity(url, id, String.class);
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("id", id.toString());
 
-        // Retourner la réponse avec le code de statut approprié et un message
-        if (response.getStatusCode().is2xxSuccessful()) {
-            // Succès (code de statut dans la plage des 2xx)
-            return ResponseEntity.ok("Rervation supprimée");
-        } else {
-            // Erreur (code de statut dans la plage des 4xx)
-            return ResponseEntity.badRequest().body("Error durant la suppression");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
+
+        try {
+            // Effectuer la requête DELETE
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+            // Vérifier la réponse
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Traitement réussi
+                return ResponseEntity.ok(response.getBody());
+            } else {
+                // Gérer les erreurs si nécessaire
+                return ResponseEntity.badRequest().body(response.getBody());
+            }
+        } catch (HttpClientErrorException.BadRequest ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error durant la suppression");
         }
     }
 

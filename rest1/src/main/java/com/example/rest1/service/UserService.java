@@ -29,7 +29,7 @@ public class UserService {
             UserDTO userDTO = new UserDTO();
             userDTO.setId(user.getId());
             userDTO.setUsername(user.getUsername());
-            //userDTO.setIsAdmin(user.getIsAdmin());
+            // userDTO.setIsAdmin(user.getIsAdmin());
             // Retourner l'objet UserDTO
             return userDTO;
         } else {
@@ -69,8 +69,20 @@ public class UserService {
         // Vérifier si l'utilisateur existe
         if (user != null && username != null) {
             user = userRepository.findByUsername(username);
+            return user;
         }
         return user;
+    }
+
+    @Transactional
+    public User getUserById(Integer id) {
+        // Vérifier si l'ID n'est pas null
+        if (id != null) {
+            // Récupérer l'utilisateur par ID
+            User user = userRepository.findByid(id);
+            return user;
+        }
+        return null;
     }
 
 }

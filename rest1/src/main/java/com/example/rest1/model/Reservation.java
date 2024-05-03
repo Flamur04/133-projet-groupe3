@@ -28,7 +28,7 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "FK_User")
-    private Integer fk_user;
+    private User user;
 
     // Getters et Setters
     public Integer getId() {
@@ -47,11 +47,11 @@ public class Reservation {
         this.voyageId = voyageId;
     }
 
-    public Integer getUser() {
-        return fk_user;
+    public User getUser() {
+        return user;
     }
 
-    public void setUser(Integer fk_user) {
-        this.fk_user = fk_user;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
