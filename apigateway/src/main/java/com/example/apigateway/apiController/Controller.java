@@ -8,7 +8,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.asm.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -256,8 +255,8 @@ public class Controller {
 
     @PostMapping("/addNewVoyage")
     public ResponseEntity<String> addNewVoyage(@RequestParam String name, @RequestParam String description,
-            @RequestParam int prix, @RequestParam String fkPays, @RequestParam LocalDate dateDepart,
-            @RequestParam LocalDate dateRetour) {
+            @RequestParam int prix, @RequestParam String fkPays, @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart,
+            @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateRetour) {
         try {
             // Appelle la méthode du service avec les informations du voyage
             ResponseEntity<String> response = serviceApiRest2.addNewVoyage(name, description, prix, fkPays, dateDepart,
