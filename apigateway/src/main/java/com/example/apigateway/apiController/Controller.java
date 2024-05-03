@@ -1,11 +1,10 @@
 package com.example.apigateway.apiController;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Map;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,17 +53,23 @@ public class Controller {
             }
         } else {
             // L'utilisateur n'est pas connecté, renvoyer une erreur non autorisée
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Utilisateur non connecté !!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Utilisateur non connecté");
         }
     }
 
     @PostMapping("/addUser")
     public ResponseEntity<String> addUser(@RequestParam String username,
             @RequestParam String password) {
-        // Ajoute l'utilisateur en utilisant le service approprié
-        ResponseEntity<String> response = serviceApiRest1.addUser(username, password);
-        // Retourne HTTP 200 en cas de succès de l'ajout de l'utilisateur
-        return ResponseEntity.ok(response.getBody());
+        try {
+            // Ajoute l'utilisateur en utilisant le service approprié
+            serviceApiRest1.addUser(username, password);
+            // Retourne HTTP 200 en cas de succès de l'ajout de l'utilisateur
+            return ResponseEntity.ok("Utilisateur ajouté avec succès");
+        } catch (Exception e) {
+            // Retourne HTTP 400 en cas d'erreur lors de l'ajout de l'utilisateur
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Erreur lors de l'ajout de l'utilisateur : " + e.getMessage());
+        }
     }
 
     @PostMapping("/login")
@@ -122,18 +127,17 @@ public class Controller {
             if (username == null) {
                 // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-            } else {
-                // Récupère l'ID de l'utilisateur à partir de la session
-                Integer fkUser = (Integer) session.getAttribute("userId");
-
-                // Ajoute la réservation en utilisant le service approprié avec les IDs du
-                // voyage et de l'utilisateur
-                serviceApiRest1.addReservation(Fk_voyage, fkUser);
-
-                // Retourne HTTP 200 en cas de succès de l'ajout de la réservation
-                return ResponseEntity.ok("Réservation ajoutée avec succès");
             }
 
+            // Récupère l'ID de l'utilisateur à partir de la session
+            Integer fkUser = (Integer) session.getAttribute("userId");
+
+            // Ajoute la réservation en utilisant le service approprié avec les IDs du
+            // voyage et de l'utilisateur
+            serviceApiRest1.addReservation(Fk_voyage, fkUser);
+
+            // Retourne HTTP 200 en cas de succès de l'ajout de la réservation
+            return ResponseEntity.ok("Réservation ajoutée avec succès");
         } catch (Exception e) {
             // Retourne HTTP 400 en cas d'erreur lors de l'ajout de la réservation
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -235,8 +239,7 @@ public class Controller {
 
     @PostMapping("/addNewVoyage")
     public ResponseEntity<String> addNewVoyage(@RequestParam String name, @RequestParam String description,
-            @RequestParam int prix, @RequestParam String fkPays,
-            @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart,
+            @RequestParam int prix, @RequestParam String fkPays, @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart,
             @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateRetour) {
         try {
             // Appelle la méthode du service avec les informations du voyage
