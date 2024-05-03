@@ -65,28 +65,35 @@ public class ServiceApiRest2 {
     }
     
     @PostMapping(path = "/addPays")
-    public ResponseEntity<String> addNewPays(String name) {
+    public ResponseEntity<String> addNewPays(@RequestBody String name) {
         String url = Rest2Url + "/addPays";
-
+    
         // Créer le corps de la requête avec les informations du pays
-        String requestBody = "{\"name\":\"" + name + "\"}";
-
-        // Créer l'entité HttpEntity avec le corps de la requête
-        HttpEntity<String> requestEntity = new HttpEntity<>(requestBody);
-
-        // Effectuer la requête POST
-        ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
-
-        // Vérifier la réponse
-        if (response.getStatusCode().is2xxSuccessful()) {
-            // Traitement réussi
-            return ResponseEntity.ok("Pays ajouté avec succès");
-        } else {
-            // Gérer les erreurs si nécessaire
-            return ResponseEntity.badRequest().body("Échec de l'ajout du pays");
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("name", name);
+    
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
+    
+        try {
+            // Effectuer la requête POST
+            ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+    
+            // Vérifier la réponse
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Traitement réussi
+                return ResponseEntity.ok("Pays ajouté avec succès");
+            } else {
+                // Gérer les erreurs si nécessaire
+                return ResponseEntity.badRequest().body("Échec de l'ajout du pays");
+            }
+        } catch (HttpClientErrorException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
     }
 
+    
     @PutMapping(path = "/updatePays/{id}")
     public ResponseEntity<String> updatePays(@PathVariable int id, @RequestBody String name) {
         String url = Rest2Url + "/updatePays/" + id;
