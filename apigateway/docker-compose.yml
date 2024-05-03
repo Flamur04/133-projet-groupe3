@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  133projetgroupe3:
+    image: 133projetgroupe3
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8080:8080

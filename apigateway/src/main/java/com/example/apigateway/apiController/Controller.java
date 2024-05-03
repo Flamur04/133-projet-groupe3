@@ -1,17 +1,11 @@
 package com.example.apigateway.apiController;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Map;
 
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.asm.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,17 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 
-import com.example.apigateway.dto.User;
 import com.example.apigateway.services.ServiceApiRest1;
 import com.example.apigateway.services.ServiceApiRest2;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -66,44 +52,38 @@ public class Controller {
             }
         } else {
             // L'utilisateur n'est pas connecté, renvoyer une erreur non autorisée
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Utilisateur non connecté !!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Utilisateur non connecté");
         }
     }
 
     @PostMapping("/addUser")
     public ResponseEntity<String> addUser(@RequestParam String username,
             @RequestParam String password) {
-        // Ajoute l'utilisateur en utilisant le service approprié
-        ResponseEntity<String> response = serviceApiRest1.addUser(username, password);
-        // Retourne HTTP 200 en cas de succès de l'ajout de l'utilisateur
-        return ResponseEntity.ok(response.getBody());
+        try {
+            // Ajoute l'utilisateur en utilisant le service approprié
+            serviceApiRest1.addUser(username, password);
+            // Retourne HTTP 200 en cas de succès de l'ajout de l'utilisateur
+            return ResponseEntity.ok("Utilisateur ajouté avec succès");
+        } catch (Exception e) {
+            // Retourne HTTP 400 en cas d'erreur lors de l'ajout de l'utilisateur
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Erreur lors de l'ajout de l'utilisateur : " + e.getMessage());
+        }
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam String username,
             @RequestParam String password,
             HttpSession session) {
-        // Appel du service pour authentification
-        ResponseEntity<?> authenticated = serviceApiRest1.login(username, password);
-
-        // Vérification de l'authentification réussie
+        ResponseEntity<String> authenticated = (ResponseEntity<String>) serviceApiRest1.login(username, password);
         if (authenticated.getStatusCode().is2xxSuccessful()) {
-            // Récupération du nom d'utilisateur et de l'ID
-            String responseString = authenticated.getBody().toString();
-            String responseUsername = responseString.substring(responseString.indexOf("\"username\":\"") + 12,
-                    responseString.indexOf("\",\"isAdmin\""));
-            String responseId = responseString.substring(responseString.indexOf("\"id\":") + 5,
-                    responseString.indexOf(",\"username\""));
-
-            // Ajout du nom d'utilisateur et de l'ID à la session
-            session.setAttribute("username", responseUsername);
-            session.setAttribute("id", responseId);
-
-            return ResponseEntity.ok("Connexion réussie");
+            // Si l'authentification réussit, stocke le nom d'utilisateur dans la session et
+            // retourne HTTP 200
+            session.setAttribute("username", username);
+            return ResponseEntity.ok("ApiGateway Logged in with " + authenticated.getBody());
         } else {
-            // Gestion des erreurs d'authentification
-            // ...
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Identifiants invalides");
+            // Si l'authentification échoue, retourne HTTP 400 avec le message d'erreur
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(authenticated.getBody());
         }
     }
 
@@ -121,17 +101,6 @@ public class Controller {
         }
     }
 
-    @GetMapping("")
-    public boolean isConnected(HttpSession session) {
-        // Vérifie si l'utilisateur est connecté
-        User user = (User) session.getAttribute("user");
-        if (user != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     @PostMapping("/addReservation")
     public ResponseEntity<String> addReservation(@RequestParam Integer Fk_voyage, HttpSession session) {
         try {
@@ -141,18 +110,17 @@ public class Controller {
             if (username == null) {
                 // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-            } else {
-                // Récupère l'ID de l'utilisateur à partir de la session
-                Integer fkUser = (Integer) session.getAttribute("userId");
-
-                // Ajoute la réservation en utilisant le service approprié avec les IDs du
-                // voyage et de l'utilisateur
-                serviceApiRest1.addReservation(Fk_voyage, fkUser);
-
-                // Retourne HTTP 200 en cas de succès de l'ajout de la réservation
-                return ResponseEntity.ok("Réservation ajoutée avec succès");
             }
 
+            // Récupère l'ID de l'utilisateur à partir de la session
+            Integer fkUser = (Integer) session.getAttribute("userId");
+
+            // Ajoute la réservation en utilisant le service approprié avec les IDs du
+            // voyage et de l'utilisateur
+            serviceApiRest1.addReservation(Fk_voyage, fkUser);
+
+            // Retourne HTTP 200 en cas de succès de l'ajout de la réservation
+            return ResponseEntity.ok("Réservation ajoutée avec succès");
         } catch (Exception e) {
             // Retourne HTTP 400 en cas d'erreur lors de l'ajout de la réservation
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -254,8 +222,7 @@ public class Controller {
 
     @PostMapping("/addNewVoyage")
     public ResponseEntity<String> addNewVoyage(@RequestParam String name, @RequestParam String description,
-            @RequestParam int prix, @RequestParam String fkPays,
-            @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart,
+            @RequestParam int prix, @RequestParam String fkPays, @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart,
             @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateRetour) {
         try {
             // Appelle la méthode du service avec les informations du voyage
