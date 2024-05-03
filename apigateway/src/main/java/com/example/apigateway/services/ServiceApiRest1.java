@@ -1,29 +1,26 @@
 package com.example.apigateway.services;
 
-import java.net.http.HttpHeaders;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.catalina.User;
-import org.apache.tomcat.util.http.parser.MediaType;
+import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.apigateway.dto.UserDTO;
-
-import jakarta.servlet.http.HttpSession;
 
 @Service
 public class ServiceApiRest1 {
@@ -54,10 +51,7 @@ public class ServiceApiRest1 {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
         params.add("password", password);
-        
-        HttpHeaders headers;
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
+
         try {
             ResponseEntity<Void> reponse = restTemplate.postForEntity(url, userDTO, Void.class);
             return ResponseEntity.ok(reponse.getBody()); // Utilisateur ajouté avec succès (HTTP 200)
@@ -66,10 +60,10 @@ public class ServiceApiRest1 {
                                                                           // 400)
         }
     }
-    @PostMapping("/login")
-    public ResponseEntity<?> login(HttpSession session, @RequestParam String username, @RequestParam String password) {
-        String url = apiGatewayUrl + "/addUser";
-        
+
+    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
+        String url = apiGatewayUrl + "/login";
+
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
         params.add("password", password);
@@ -77,12 +71,12 @@ public class ServiceApiRest1 {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
-        
+
         try {
-            ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, User.class);
+            ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.POST,
+                    requestEntity, User.class);
             User user = response.getBody();
 
-            session.setAttribute("user", user);
             return ResponseEntity.ok(Collections.singletonMap("username", user.getUsername()));
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
@@ -90,27 +84,6 @@ public class ServiceApiRest1 {
             } else {
                 return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
             }
-        }
-    }
-
-    public ResponseEntity<String> login(String username, String password) {
-        String url = apiGatewayUrl + "/login";
-
-        // Préparer la requête (ajustez selon l'API que vous appelez)
-        Map<String, String> credentials = new HashMap<>();
-        credentials.put("username", username);
-        credentials.put("password", password);
-
-        // Effectuer l'appel API et recevoir la réponse => postFor peut être un getFor !
-        ResponseEntity<String> response = restTemplate.postForEntity(url, credentials, String.class);
-
-        // Retourner la réponse avec le code de statut approprié et un message
-        if (response.getStatusCode().is2xxSuccessful()) {
-            // Succès (code de statut dans la plage des 2xx)
-            return ResponseEntity.ok(response.getBody());
-        } else {
-            // Erreur (code de statut dans la plage des 4xx)
-            return ResponseEntity.badRequest().body(response.getBody());
         }
     }
 

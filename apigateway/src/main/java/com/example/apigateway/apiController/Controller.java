@@ -71,10 +71,10 @@ public class Controller {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String username,
+    public ResponseEntity<?> login(@RequestParam String username,
             @RequestParam String password,
             HttpSession session) {
-        ResponseEntity<String> authenticated = serviceApiRest1.login(username, password);
+        ResponseEntity<String> authenticated = (ResponseEntity<String>) serviceApiRest1.login(username, password);
         if (authenticated.getStatusCode().is2xxSuccessful()) {
             // Si l'authentification réussit, stocke le nom d'utilisateur dans la session et
             // retourne HTTP 200
