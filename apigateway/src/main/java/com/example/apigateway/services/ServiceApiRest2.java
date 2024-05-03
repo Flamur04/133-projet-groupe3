@@ -42,7 +42,6 @@ public class ServiceApiRest2 {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    //@GetMapping(path = "/getAllPays")
     public ResponseEntity<String> getAllPays() {
         String url = Rest2Url + "/getAllPays";
     
@@ -66,7 +65,7 @@ public class ServiceApiRest2 {
         }
     }
     
-   // @PostMapping(path = "/addPays")
+
     public ResponseEntity<String> addNewPays(@RequestBody String name) {
         String url = Rest2Url + "/addPays";
     
@@ -96,7 +95,7 @@ public class ServiceApiRest2 {
     }
 
     
-   // @PutMapping(path = "/updatePays/{id}")
+
     public ResponseEntity<String> updatePays(@PathVariable int id, @RequestBody String name) {
         String url = Rest2Url + "/updatePays/" + id;
     
@@ -126,11 +125,7 @@ public class ServiceApiRest2 {
         }
     }
     
-    
-    
-    
 
-    @DeleteMapping(path = "/deletePays/{id}")
     public ResponseEntity<String> deletePays(@PathVariable int id) {
         String url = Rest2Url + "/deletePays/" + id;
         try {
@@ -152,7 +147,7 @@ public class ServiceApiRest2 {
         }
     }
     
-// @PostMapping(path = "/addVoyage")
+
 public ResponseEntity<String> addNewVoyage(String name, String description, double prix, String fkPays, LocalDate dateDepart, LocalDate dateRetour) {
     String url = Rest2Url + "/addVoyage";
 
@@ -192,57 +187,69 @@ public ResponseEntity<String> addNewVoyage(String name, String description, doub
     }
 }
 
-
-    
-    
-    
-    
-    
-
 public ResponseEntity<String> updateVoyage(int id, String name, String description, int prix, String fkPays, int version, LocalDate dateDepart, LocalDate dateRetour) {
-    String url = Rest2Url + "/updateVoyage";
+    String url = Rest2Url + "/updateVoyage/" + id;
+
+    // Convertir les objets LocalDate en chaînes de caractères
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    String strDateDepart = dateDepart.format(formatter);
+    String strDateRetour = dateRetour.format(formatter);
 
     // Créer le corps de la requête avec les informations du voyage
-    String requestBody = "{\"id\":" + id + ", \"name\":\"" + name + "\", \"description\":\"" + description + "\", \"prix\":" + prix +", \"fkPays\":\"" + fkPays + "\", \"version\":" + version + ", \"dateDepart\":\"" + dateDepart + "\", \"dateRetour\":\"" + dateRetour + "\"}";
+    LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+    params.add("name", name);
+    params.add("description", description);
+    params.add("prix", String.valueOf(prix));
+    params.add("fkPays", fkPays);
+    params.add("version", String.valueOf(version));
+    params.add("dateDepart", strDateDepart);
+    params.add("dateRetour", strDateRetour);
 
-    // Créer l'entité HttpEntity avec le corps de la requête
-    HttpEntity<String> requestEntity = new HttpEntity<>(requestBody);
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
 
-    // Effectuer la requête PUT
-    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
+    try {
+        // Effectuer la requête PUT
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
 
-    // Vérifier la réponse
-    if (response.getStatusCode().is2xxSuccessful()) {
-        // Traitement réussi
-        return ResponseEntity.ok("Voyage mis à jour avec succès");
-    } else {
-        // Gérer les erreurs si nécessaire
-        return ResponseEntity.badRequest().body("Échec de la mise à jour du voyage");
+        // Vérifier la réponse
+        if (response.getStatusCode().is2xxSuccessful()) {
+            // Traitement réussi
+            return ResponseEntity.ok("Voyage mis à jour avec succès");
+        } else {
+            // Gérer les erreurs si nécessaire
+            return ResponseEntity.badRequest().body("Échec de la mise à jour du voyage");
+        }
+    } catch (Exception e) {
+        // Gérer les exceptions si nécessaire
+        return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
     }
 }
+
 
 
 public ResponseEntity<String> deleteVoyage(int id) {
-    String url = Rest2Url +  "/deleteVoyage";
+    String url = Rest2Url + "/deleteVoyage/" + id;
 
-    // Créer le corps de la requête avec l'ID du voyage à supprimer
-    String requestBody = "{\"id\":\"" + id + "\"}";
+    try {
+        // Effectuer la requête DELETE
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
 
-    // Créer l'entité HttpEntity avec le corps de la requête
-    HttpEntity<String> requestEntity = new HttpEntity<>(requestBody);
-
-    // Effectuer la requête DELETE
-    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, String.class);
-
-    // Vérifier la réponse
-    if (response.getStatusCode().is2xxSuccessful()) {
-        // Traitement réussi
-        return ResponseEntity.ok("Voyage supprimé avec succès");
-    } else {
-        // Gérer les erreurs si nécessaire
-        return ResponseEntity.badRequest().body("Échec de la suppression du voyage");
+        // Vérifier la réponse
+        if (response.getStatusCode().is2xxSuccessful()) {
+            // Traitement réussi
+            return ResponseEntity.ok("Voyage supprimé avec succès");
+        } else {
+            // Gérer les erreurs si nécessaire
+            return ResponseEntity.badRequest().body("Échec de la suppression du voyage");
+        }
+    } catch (Exception e) {
+        // Gérer les exceptions si nécessaire
+        return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
     }
 }
+
 
 public ResponseEntity<String> getAllVoyages() {
     String url = Rest2Url + "/getAllVoyages";
