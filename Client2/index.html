@@ -35,68 +35,64 @@
                     <option value="pays">Pays</option>
                     <option value="voyage">Voyage</option>
                 </select>
-                <div class="mt-4">
+                <div class="mt-4 h-64 overflow-y-auto">
                     <label class="block mb-2" for="selectionItem">Sélectionnez un élément :</label>
                     <!-- Utilisation d'une liste à la place d'une liste déroulante -->
                     <ul id="selectionList" class="w-full p-2 border rounded-md">
-                        <li>Chien</li>
-                        <li>Chat</li>
-                        <li>Oiseau</li>
-                        <li>Lion</li>
-                        <li>Éléphant</li>
-                        <li>Poisson</li>
-                        <li>Serpent</li>
-                        <li>Tigre</li>
-                        <li>Girafe</li>
-                        <li>Cheval</li>
+
                     </ul>
                 </div>
-
-                <!-- Ajout d'autres champs texte -->
+                <div class="w-1/2 pl-4 mt-4">
+                    <button id="addButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">Ajouter</button>
+                    <button id="editButton" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mr-2">Modifier</button>
+                    <button id="deleteButton" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Supprimer</button>
+                </div>
                
             </div>
             <div class="w-1/2 pl-4">
                 <div class="mb-4">
-                    <label class="block mb-2" for="textField1">Champ texte 1 :</label>
+                    <label class="block mb-2" for="textField1">Nom :</label>
                     <input type="text" id="textField1" class="w-full p-2 border rounded-md" placeholder="Entrez du texte ici">
                 </div>
                 <div class="mb-4">
-                    <label class="block mb-2" for="textField2">Champ texte 2 :</label>
+                    <label class="block mb-2" for="textField2">Description :</label>
                     <input type="text" id="textField2" class="w-full p-2 border rounded-md" placeholder="Entrez du texte ici">
                 </div>
                 <div class="mb-4">
-                    <label class="block mb-2" for="textField3">Champ texte 3 :</label>
+                    <label class="block mb-2" for="textField3">Prix :</label>
                     <input type="text" id="textField3" class="w-full p-2 border rounded-md" placeholder="Entrez du texte ici">
                 </div>
                 <div class="mb-4">
-                    <label class="block mb-2" for="textField4">Champ texte 4 :</label>
+                    <label class="block mb-2" for="textField4">Pays :</label>
                     <input type="text" id="textField4" class="w-full p-2 border rounded-md" placeholder="Entrez du texte ici">
                 </div>
                 <div class="mt-4">
-                    <label class="block mb-2" for="textField5">Champ texte 5 :</label>
+                    <label class="block mb-2" for="textField5">Nombre de jour :</label>
                     <input type="text" id="textField5" class="w-full p-2 border rounded-md" placeholder="Entrez du texte ici">
                 </div>
                 <div class="mt-4">
-                    <label class="block mb-2" for="textField6">Champ texte 6 :</label>
+                    <label class="block mb-2" for="textField6">Date de départ :</label>
                     <input type="text" id="textField6" class="w-full p-2 border rounded-md" placeholder="Entrez du texte ici">
                 </div>
                 <div class="mt-4">
-                    <label class="block mb-2" for="textField6">Champ texte 7 :</label>
-                    <input type="text" id="textField6" class="w-full p-2 border rounded-md" placeholder="Entrez du texte ici">
+                    <label class="block mb-2" for="textField7">Date de retour :</label>
+                    <input type="text" id="textField7" class="w-full p-2 border rounded-md" placeholder="Entrez du texte ici">
                 </div>
                 <div class="mt-4">
-                    <label class="block mb-2" for="textField6">Champ texte 8 :</label>
-                    <input type="text" id="textField6" class="w-full p-2 border rounded-md" placeholder="Entrez du texte ici">
+                    <label class="block mb-2" for="textField8">Pays:</label>
+                    <input type="text" id="textField8" class="w-full p-2 border rounded-md" placeholder="Entrez du texte ici">
                 </div>
             </div>
         </div>
     </div>
+
+
     
     <!-- Bande noire en bas de la page -->
     <div class="bg-black text-white p-4">
         <h2 class="text-center text-xl"></h2>
     </div>
 
-    <script src="script.js"></script>
+    <script src="javascript/ctrl/indexCtrl.js"></script>
 </body>
 </html>

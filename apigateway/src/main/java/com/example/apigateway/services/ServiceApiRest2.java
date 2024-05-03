@@ -35,7 +35,7 @@ import org.springframework.http.HttpStatus;
 @Service
 public class ServiceApiRest2 {
     private final RestTemplate restTemplate;
-    private final String Rest2Url = "http://localhost:8082";
+    private final String Rest2Url = "http://restAPI2:8080";
 
     @Autowired
     public ServiceApiRest2(RestTemplateBuilder restTemplateBuilder) {
