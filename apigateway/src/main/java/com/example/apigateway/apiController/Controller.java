@@ -132,13 +132,11 @@ public class Controller {
     @PostMapping("/addReservation")
     public ResponseEntity<String> addReservation(@RequestParam Integer Fk_voyage, HttpSession session) {
         try {
-            /*
-             * if (session.getAttribute("username") == null) {
-             * // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
-             * return
-             * ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-             * }
-             */
+
+            if (session.getAttribute("username") == null) {
+                // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+            }
 
             // Récupère l'ID de l'utilisateur à partir de la session
             Integer fk_user = (Integer) session.getAttribute("fk_user");
@@ -163,11 +161,13 @@ public class Controller {
     }
 
     @DeleteMapping("/deleteReservation")
-    public ResponseEntity<String> deleteReservation(@RequestParam Integer id) {
+    public ResponseEntity<String> deleteReservation(@RequestParam Integer id, HttpSession session) {
         try {
 
-            // Ajoute la réservation en utilisant le service approprié avec les IDs du
-            // voyage et de l'utilisateur
+            if (session.getAttribute("username") == null) {
+                // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+            }
             ResponseEntity<String> response = serviceApiRest1.deleteReservation(id);
 
             if (response.getStatusCode().is2xxSuccessful()) {
@@ -182,6 +182,26 @@ public class Controller {
             // Retourne HTTP 400 en cas d'erreur lors de l'ajout de la réservation
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/modifieReservation")
+    public ResponseEntity<String> modifieReservation(@PathVariable int id, @RequestParam String name) {
+        try {
+            // Appelle la méthode du service avec l'ID et le nom du pays
+            ResponseEntity<String> response = serviceApiRest2.updatePays(id, name);
+
+            // Vérifie si la réponse est réussie (code d'état 200)
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Retourne HTTP 200 avec le message de succès en cas de succès
+                return ResponseEntity.ok("Pays mis à jour avec succès");
+            } else {
+                // Retourne HTTP 400 avec un message d'erreur en cas d'échec
+                return ResponseEntity.badRequest().body("Échec de la mise à jour du pays");
+            }
+        } catch (Exception e) {
+            // Retourne HTTP 400 avec un message d'erreur en cas d'exception
+            return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
         }
     }
 

@@ -105,7 +105,6 @@ public class Controller {
     @PostMapping(path = "/addReservation")
     public ResponseEntity<String> addReservation(@RequestParam Integer fk_voyage, @RequestParam Integer fk_user) {
         try {
-
             // Créer une nouvelle réservation
             Reservation reservation = new Reservation();
 
@@ -147,23 +146,17 @@ public class Controller {
     }
 
     @PutMapping(path = "/modifieReservation")
-    public ResponseEntity<String> modifieReservation(@RequestParam Integer Fk_voyage,
-            HttpSession session) {
+    public ResponseEntity<String> modifieReservation(@RequestParam Integer fk_voyage, @RequestParam Integer fk_user) {
         try {
-            // Récupérer l'utilisateur connecté à partir de la session
-            User user = (User) session.getAttribute("user");
-            if (user == null) {
-                return ResponseEntity.badRequest().body("Aucun utilisateur connecté");
-            }
 
             // Récupérer la réservation existante
-            Reservation reservation = (Reservation) reservationService.getUserReservations(user.getId());
+            Reservation reservation = (Reservation) reservationService.getUserReservations(fk_user);
             if (reservation == null) {
-                return ResponseEntity.badRequest().body("La réservation avec l'ID " + user.getId() + " n'existe pas");
+                return ResponseEntity.badRequest().body("La réservation avec l'ID " + fk_user + " n'existe pas");
             }
 
-            // Définir l'utilisateur pour la réservation
-            reservation.setUser(user);
+            // reservation.setUser(userService.getUserById(fk_user));
+            reservation.setVoyage(fk_voyage);
 
             // Modifier la réservation en utilisant le service de réservation
             reservationService.modifieReservation(reservation);

@@ -1,10 +1,5 @@
 package com.example.apigateway.services;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.catalina.User;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -24,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 public class ServiceApiRest1 {
 
     private final RestTemplate restTemplate;
-    private final String apiGatewayUrl = "http://localhost:8081";
+    private final String apiGatewayUrl = "http://restAPI1:8080";
 
     @Autowired
     public ServiceApiRest1(RestTemplateBuilder restTemplateBuilder) {
@@ -140,7 +135,7 @@ public class ServiceApiRest1 {
         }
     }
 
-    public ResponseEntity<String> deleteReservation(Integer id) {
+    public ResponseEntity<String> deleteReservation(@RequestParam Integer id) {
         // Appeler votre API Gateway pour gérer la déconnexion
         String url = apiGatewayUrl + "/deleteReservation";
 
@@ -152,8 +147,8 @@ public class ServiceApiRest1 {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
 
         try {
-            // Effectuer la requête DELETE
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity,
+                    String.class);
             // Vérifier la réponse
             if (response.getStatusCode().is2xxSuccessful()) {
                 // Traitement réussi
