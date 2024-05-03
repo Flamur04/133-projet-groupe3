@@ -2,6 +2,7 @@ package com.example.apigateway.services;
 
 import org.springframework.http.HttpHeaders;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,7 +42,7 @@ public class ServiceApiRest2 {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    @GetMapping(path = "/getAllPays")
+    //@GetMapping(path = "/getAllPays")
     public ResponseEntity<String> getAllPays() {
         String url = Rest2Url + "/getAllPays";
     
@@ -64,7 +66,7 @@ public class ServiceApiRest2 {
         }
     }
     
-    @PostMapping(path = "/addPays")
+   // @PostMapping(path = "/addPays")
     public ResponseEntity<String> addNewPays(@RequestBody String name) {
         String url = Rest2Url + "/addPays";
     
@@ -94,7 +96,7 @@ public class ServiceApiRest2 {
     }
 
     
-    @PutMapping(path = "/updatePays/{id}")
+   // @PutMapping(path = "/updatePays/{id}")
     public ResponseEntity<String> updatePays(@PathVariable int id, @RequestBody String name) {
         String url = Rest2Url + "/updatePays/" + id;
     
@@ -150,28 +152,52 @@ public class ServiceApiRest2 {
         }
     }
     
-
-    public ResponseEntity<String> addNewVoyage(String name, String description, int prix, String fkPays, LocalDate dateDepart, LocalDate dateRetour) {
+// @PostMapping(path = "/addVoyage")
+public ResponseEntity<String> addNewVoyage(String name, String description, double prix, String fkPays, LocalDate dateDepart, LocalDate dateRetour) {
     String url = Rest2Url + "/addVoyage";
 
+    // Convertir les objets LocalDate en chaînes de caractères
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    String strDateDepart = dateDepart.format(formatter);
+    String strDateRetour = dateRetour.format(formatter);
+
     // Créer le corps de la requête avec les informations du voyage
-    String requestBody = "{\"name\":\"" + name + "\", \"description\":\"" + description + "\", \"prix\":" + prix + ", \"fkPays\":\"" + fkPays + "\", \"dateDepart\":\"" + dateDepart + "\", \"dateRetour\":\"" + dateRetour + "\"}";
+    LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+    params.add("name", name);
+    params.add("description", description);
+    params.add("prix", String.valueOf(prix));
+    params.add("fkPays", fkPays);
+    params.add("dateDepart", strDateDepart);
+    params.add("dateRetour", strDateRetour);
 
-    // Créer l'entité HttpEntity avec le corps de la requête
-    HttpEntity<String> requestEntity = new HttpEntity<>(requestBody);
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
 
-    // Effectuer la requête POST
-    ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+    try {
+        // Effectuer la requête POST
+        ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
 
-    // Vérifier la réponse
-    if (response.getStatusCode().is2xxSuccessful()) {
-        // Traitement réussi
-        return ResponseEntity.ok("Voyage ajouté avec succès");
-    } else {
-        // Gérer les erreurs si nécessaire
-        return ResponseEntity.badRequest().body("Échec de l'ajout du voyage");
+        // Vérifier la réponse
+        if (response.getStatusCode().is2xxSuccessful()) {
+            // Traitement réussi
+            return ResponseEntity.ok("Voyage ajouté avec succès");
+        } else {
+            // Gérer les erreurs si nécessaire
+            return ResponseEntity.badRequest().body("Échec de l'ajout du voyage");
+        }
+    } catch (Exception e) {
+        // Gérer les exceptions si nécessaire
+        return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
     }
 }
+
+
+    
+    
+    
+    
+    
 
 public ResponseEntity<String> updateVoyage(int id, String name, String description, int prix, String fkPays, int version, LocalDate dateDepart, LocalDate dateRetour) {
     String url = Rest2Url + "/updateVoyage";
