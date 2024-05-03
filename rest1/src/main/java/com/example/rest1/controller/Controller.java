@@ -103,23 +103,21 @@ public class Controller {
     }
 
     @PostMapping(path = "/addReservation")
-    public ResponseEntity<String> addReservation(@RequestParam Integer Fk_voyage, HttpSession session) {
+    public ResponseEntity<String> addReservation(@RequestParam Integer Fk_voyage, @RequestParam Integer Fk_user) {
         try {
-            // Récupérer l'utilisateur connecté à partir de la session
-            User user = (User) session.getAttribute("user");
-            if (user == null) {
-                return ResponseEntity.badRequest().body("Aucun utilisateur connecté");
-            }
-
             // Récupérer le voyage correspondant à l'ID Fk_voyage
-            Reservation voyage = (Reservation) reservationService.getVoyageById(Fk_voyage);
-            if (voyage == null) {
-                return ResponseEntity.badRequest().body("Le voyage avec l'ID " + Fk_voyage + " n'existe pas");
-            }
+            /*
+             * Reservation voyage = (Reservation)
+             * reservationService.getVoyageById(Fk_voyage);
+             * if (voyage == null) {
+             * return ResponseEntity.badRequest().body("Le voyage avec l'ID " + Fk_voyage +
+             * " n'existe pas");
+             * }
+             */
 
             // Créer une nouvelle réservation
             Reservation reservation = new Reservation();
-            reservation.setUser(user);
+            reservation.setUser(Fk_user);
             reservation.setVoyage(Fk_voyage);
 
             // Ajouter la réservation en utilisant le service de réservation
@@ -160,7 +158,7 @@ public class Controller {
             }
 
             // Définir l'utilisateur pour la réservation
-            reservation.setUser(user);
+            reservation.setUser(3);
 
             // Modifier la réservation en utilisant le service de réservation
             reservationService.modifieReservation(reservation);

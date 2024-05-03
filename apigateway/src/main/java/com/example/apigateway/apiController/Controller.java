@@ -91,7 +91,7 @@ public class Controller {
 
                 // Ajout du nom d'utilisateur et de l'ID à la session
                 session.setAttribute("username", responseUsername);
-                session.setAttribute("id", responseId);
+                session.setAttribute("fk_user", responseId);
 
                 return ResponseEntity.ok("Connexion réussie");
             } else {
@@ -121,20 +121,17 @@ public class Controller {
     @PostMapping("/addReservation")
     public ResponseEntity<String> addReservation(@RequestParam Integer Fk_voyage, HttpSession session) {
         try {
-            // Vérifie si l'utilisateur est connecté en vérifiant la présence de son nom
-            // d'utilisateur dans la session
-            String username = (String) session.getAttribute("username");
-            if (username == null) {
+            if (session.getAttribute("username") == null) {
                 // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
             }
 
             // Récupère l'ID de l'utilisateur à partir de la session
-            Integer fkUser = (Integer) session.getAttribute("userId");
+            Integer fk_user = (Integer) session.getAttribute("fk_user");
 
             // Ajoute la réservation en utilisant le service approprié avec les IDs du
             // voyage et de l'utilisateur
-            serviceApiRest1.addReservation(Fk_voyage, fkUser);
+            serviceApiRest1.addReservation(Fk_voyage, fk_user);
 
             // Retourne HTTP 200 en cas de succès de l'ajout de la réservation
             return ResponseEntity.ok("Réservation ajoutée avec succès");
@@ -239,7 +236,8 @@ public class Controller {
 
     @PostMapping("/addNewVoyage")
     public ResponseEntity<String> addNewVoyage(@RequestParam String name, @RequestParam String description,
-            @RequestParam int prix, @RequestParam String fkPays, @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart,
+            @RequestParam int prix, @RequestParam String fkPays,
+            @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart,
             @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateRetour) {
         try {
             // Appelle la méthode du service avec les informations du voyage
