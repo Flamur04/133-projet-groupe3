@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.apigateway.dto.UserDTO;
 
 @Service
 public class ServiceApiRest1 {
@@ -44,20 +43,31 @@ public class ServiceApiRest1 {
         return ResponseEntity.ok(reponse.getBody());
     }
 
-    public ResponseEntity<Void> addUser(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<String> addUser(@RequestParam String username, @RequestParam String password) {
         String url = apiGatewayUrl + "/addUser";
-        UserDTO userDTO = new UserDTO(username, password);
+
+        //User userDTO = new User(username, password);
 
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
         params.add("password", password);
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
+
         try {
-            ResponseEntity<Void> reponse = restTemplate.postForEntity(url, userDTO, Void.class);
-            return ResponseEntity.ok(reponse.getBody()); // Utilisateur ajouté avec succès (HTTP 200)
+            ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+            // Vérifier la réponse
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Traitement réussi
+                return ResponseEntity.ok(response.getBody());
+            } else {
+                // Gérer les erreurs si nécessaire
+                return ResponseEntity.badRequest().body(response.getBody());
+            }
         } catch (HttpClientErrorException.BadRequest ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // Échec de l'ajout de l'utilisateur (HTTP //
-                                                                          // 400)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("L'utilisateur " + username + " existe déjà !");
         }
     }
 
@@ -73,17 +83,17 @@ public class ServiceApiRest1 {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
 
         try {
-            ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.POST,
-                    requestEntity, User.class);
-            User user = response.getBody();
-
-            return ResponseEntity.ok(Collections.singletonMap("username", user.getUsername()));
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                return ResponseEntity.status(e.getStatusCode()).body("Nom d'utilisateur ou mot passe invalide.");
+            ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+            // Vérifier la réponse
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Traitement réussi
+                return ResponseEntity.ok(response.getBody());
             } else {
-                return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+                // Gérer les erreurs si nécessaire
+                return ResponseEntity.badRequest().body(response.getBody());
             }
+        } catch (HttpClientErrorException.BadRequest ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Le username ou le password est faux !!");
         }
     }
 
@@ -104,18 +114,31 @@ public class ServiceApiRest1 {
         }
     }
 
-    public boolean addReservation(Integer fk_voyage, Integer fk_user) {
+    public ResponseEntity<String> addReservation(@RequestParam Integer fk_voyage, @RequestParam Integer fk_user) {
         // Appeler votre API Gateway pour gérer la déconnexion
         String url = apiGatewayUrl + "/addReservation";
 
-        // Préparer la requête (ajustez selon l'API que vous appelez)
-        Map<Integer, Integer> credentials = new HashMap<>();
-        // credentials.put("Fk_voyage", fk_voyage);
-        // credentials.put("Fk_user", fk_user);
-        // Effectuer la requête GET ou POST selon l'API Gateway
-        ResponseEntity<String> response = restTemplate.postForEntity(url, credentials, String.class);
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("fk_voyage", fk_voyage.toString());
+        params.add("fk_user", fk_user.toString());
 
-        return response.getStatusCode().is2xxSuccessful();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
+
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+            // Vérifier la réponse
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Traitement réussi
+                return ResponseEntity.ok(response.getBody());
+            } else {
+                // Gérer les erreurs si nécessaire
+                return ResponseEntity.badRequest().body(response.getBody());
+            }
+        } catch (HttpClientErrorException.BadRequest ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La reservation n'a pas pu être ajoutée !");
+        }
     }
 
     public ResponseEntity<String> deleteReservation(Integer id) {

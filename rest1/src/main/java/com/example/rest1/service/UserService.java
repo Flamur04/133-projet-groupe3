@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.rest1.dto.UserDTO;
 import com.example.rest1.model.User;
 import com.example.rest1.repository.UserRepository;
 
@@ -21,12 +22,20 @@ public class UserService {
     }
 
     @Transactional
-    public boolean checkCredentials(String username, String password) {
-        // Récupérer l'utilisateur par nom d'utilisateur
+    public UserDTO checkCredentials(String username, String password) {
         User user = userRepository.findByUsername(username);
-
-        // Vérifier si l'utilisateur existe et si le mot de passe correspond
-        return user != null && user.getPassword().equals(password);
+        if (user != null && user.getPassword().equals(password)) {
+            // Créer un nouvel objet UserDTO et copier les données pertinentes de User
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setUsername(user.getUsername());
+            //userDTO.setIsAdmin(user.getIsAdmin());
+            // Retourner l'objet UserDTO
+            return userDTO;
+        } else {
+            // Retourner null si les informations d'identification sont incorrectes
+            return null;
+        }
     }
 
     public Iterable<User> findAllUsers() {

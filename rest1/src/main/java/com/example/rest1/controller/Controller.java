@@ -2,6 +2,7 @@ package com.example.rest1.controller;
 
 import java.sql.Blob;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import com.example.rest1.model.User;
 import com.example.rest1.service.ReservationService;
 import com.example.rest1.service.UserService;
 import com.example.rest1.controller.BCryptPasswordEncoder;
+import com.example.rest1.dto.UserDTO;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -85,23 +87,19 @@ public class Controller {
      * @return
      */
     @PostMapping(path = "/login")
-    public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password,
-            HttpSession session) {
-
+    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
         // Hacher le mot de passe fourni et le comparer avec le hachage stocké
         String hashedPassword = passwordEncoder.hashPassword(password);
 
         // Vérifiez les identifiants de l'utilisateur
-        final boolean validCredentials = userService.checkCredentials(username, hashedPassword);
+        UserDTO user = userService.checkCredentials(username, hashedPassword);
 
-        if (!validCredentials) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Identifiants incorrects");
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Collections.singletonMap("error", "Nom d'utilisateur ou mot de passe invalide."));
         }
-
-        // Stockez le nom d'utilisateur dans la session
-        session.setAttribute("username", username);
-
-        return ResponseEntity.ok("Logged in with " + username);
     }
 
     @PostMapping(path = "/addReservation")
