@@ -1,12 +1,12 @@
 package com.example.apigateway.services;
 
-import java.net.http.HttpHeaders;
+import org.springframework.http.HttpHeaders;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tomcat.util.http.parser.MediaType;
+import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -23,6 +23,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import org.springframework.core.env.Environment;
+
+import org.springframework.http.HttpStatus;
+
+
 
 @Service
 public class ServiceApiRest2 {
@@ -90,8 +96,9 @@ public class ServiceApiRest2 {
         params.add("name", name);
     
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.parseMediaType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
+        
     
         try {
             // Effectuer la requête PUT
@@ -109,6 +116,7 @@ public class ServiceApiRest2 {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
     }
+    
     
     
     
