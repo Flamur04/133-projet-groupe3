@@ -4,14 +4,10 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Map;
 
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.asm.TypeReference;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,17 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 
-import com.example.apigateway.dto.User;
 import com.example.apigateway.services.ServiceApiRest1;
 import com.example.apigateway.services.ServiceApiRest2;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -49,7 +37,7 @@ public class Controller {
     public ResponseEntity<String> getNothing() {
         ResponseEntity<String> responseEntity = serviceApiRest1.getNothing();
         // Renvoyer la réponse du service REST1 directement au client
-        return responseEntity;
+        return ResponseEntity.ok(responseEntity.getBody());
     }
 
     @GetMapping("/getUsers")
@@ -80,30 +68,34 @@ public class Controller {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String username,
+    public ResponseEntity<String> login(@RequestParam String username,
             @RequestParam String password,
             HttpSession session) {
-        // Appel du service pour authentification
-        ResponseEntity<?> authenticated = serviceApiRest1.login(username, password);
+        try {
+            // Appel du service pour authentification
+            ResponseEntity<?> authenticated = serviceApiRest1.login(username, password);
 
-        // Vérification de l'authentification réussie
-        if (authenticated.getStatusCode().is2xxSuccessful()) {
-            // Récupération du nom d'utilisateur et de l'ID
-            String responseString = authenticated.getBody().toString();
-            String responseUsername = responseString.substring(responseString.indexOf("\"username\":\"") + 12,
-                    responseString.indexOf("\",\"isAdmin\""));
-            String responseId = responseString.substring(responseString.indexOf("\"id\":") + 5,
-                    responseString.indexOf(",\"username\""));
+            // Vérification de l'authentification réussie
+            if (authenticated.getStatusCode().is2xxSuccessful()) {
+                // Récupération du nom d'utilisateur et de l'ID
+                String responseString = authenticated.getBody().toString();
+                String responseUsername = responseString.substring(responseString.indexOf("\"username\":\"") + 12,
+                        responseString.indexOf("\",\"isAdmin\""));
+                String responseId = responseString.substring(responseString.indexOf("\"id\":") + 5,
+                        responseString.indexOf(",\"username\""));
 
-            // Ajout du nom d'utilisateur et de l'ID à la session
-            session.setAttribute("username", responseUsername);
-            session.setAttribute("id", responseId);
+                // Ajout du nom d'utilisateur et de l'ID à la session
+                session.setAttribute("username", responseUsername);
+                session.setAttribute("id", responseId);
 
-            return ResponseEntity.ok("Connexion réussie");
-        } else {
-            // Gestion des erreurs d'authentification
-            // ...
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Identifiants invalides");
+                return ResponseEntity.ok("Connexion réussie");
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Identifiants invalides");
+            }
+        } catch (Exception e) {
+            // Retourne HTTP 400 en cas d'erreur lors de la déconnexion
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Erreur lors durant le login : " + e.getMessage());
         }
     }
 
@@ -118,17 +110,6 @@ public class Controller {
             // Retourne HTTP 400 en cas d'erreur lors de la déconnexion
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Erreur lors de la déconnexion : " + e.getMessage());
-        }
-    }
-
-    @GetMapping("")
-    public boolean isConnected(HttpSession session) {
-        // Vérifie si l'utilisateur est connecté
-        User user = (User) session.getAttribute("user");
-        if (user != null) {
-            return true;
-        } else {
-            return false;
         }
     }
 

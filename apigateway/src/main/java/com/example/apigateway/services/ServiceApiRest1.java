@@ -59,7 +59,7 @@ public class ServiceApiRest1 {
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
             // Vérifier la réponse
-            if (response.getStatusCode().is2xxSuccessful()) {
+            if (response.getStatusCode().is2xxSuccessful()) { 
                 // Traitement réussi
                 return ResponseEntity.ok(response.getBody());
             } else {
