@@ -88,18 +88,17 @@ public class Controller {
 
         // Vérification de l'authentification réussie
         if (authenticated.getStatusCode().is2xxSuccessful()) {
-            // Récupération de la réponse JSON sous forme de chaîne
-            String responseBody = (String) authenticated.getBody();
+            // Récupération du nom d'utilisateur et de l'ID
+            String responseString = authenticated.getBody().toString();
+            String responseUsername = responseString.substring(responseString.indexOf("\"username\":\"") + 12,
+                    responseString.indexOf("\",\"isAdmin\""));
+            String responseId = responseString.substring(responseString.indexOf("\"id\":") + 5,
+                    responseString.indexOf(",\"username\""));
 
-            // Conversion de la réponse JSON en un objet Java
-            ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, Object> userMap = objectMapper.readValue(responseBody,
-                    new TypeReference<Map<String, Object>>() {
-                    });
-            // Définition des attributs de session
-            session.setAttribute("userId", userMap.get("id"));
-            session.setAttribute("username", userMap.get("username"));
-            // Réponse indiquant une connexion réussie
+            // Ajout du nom d'utilisateur et de l'ID à la session
+            session.setAttribute("username", responseUsername);
+            session.setAttribute("id", responseId);
+
             return ResponseEntity.ok("Connexion réussie");
         } else {
             // Gestion des erreurs d'authentification
@@ -255,7 +254,8 @@ public class Controller {
 
     @PostMapping("/addNewVoyage")
     public ResponseEntity<String> addNewVoyage(@RequestParam String name, @RequestParam String description,
-            @RequestParam int prix, @RequestParam String fkPays, @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart,
+            @RequestParam int prix, @RequestParam String fkPays,
+            @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart,
             @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateRetour) {
         try {
             // Appelle la méthode du service avec les informations du voyage
