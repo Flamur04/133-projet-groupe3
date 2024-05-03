@@ -30,12 +30,37 @@ function updateVoyage(id, name, description, prix, fkPays, version, dateDepart, 
         dateDepart: dateDepart,
         dateRetour: dateRetour
       },
-      url: BASE_URL + "voyage/update/" + id,
+      url: BASE_URL + "updateVoyage/" + id,
       xhrFields: {
         withCredentials: true
       },
       success: successCallback,
       error: errorCallback,
     });
+
+
+    
+    /**
+ * Fonction permettant d'obtenir tous les voyages.
+ * @param {type} Fonction de callback lors du retour avec succès de l'appel.
+ * @param {type} Fonction de callback en cas d'erreur.
+ */
+function getAllVoyages(successCallback, errorCallback) {
+    $.ajax({
+      type: "GET",
+      url: BASE_URL + "getAllVoyages",
+      xhrFields: {
+        withCredentials: true
+      },
+      success: successCallback,
+      error: errorCallback,
+    });
+}
+
+
+
+
+
+
   }
   
