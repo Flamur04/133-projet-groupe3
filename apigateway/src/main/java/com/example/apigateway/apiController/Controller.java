@@ -66,12 +66,14 @@ public class Controller {
         try {
             // Ajoute l'utilisateur en utilisant le service approprié
             serviceApiRest1.addUser(username, password);
-            // Retourne HTTP 200 en cas de succès de l'ajout de l'utilisateur
-            return ResponseEntity.ok("Utilisateur ajouté avec succès");
+
+            // Crée un objet JSON pour la réponse de succès
+            String successMessage = "Utilisateur ajouté avec succès";
+            return ResponseEntity.ok().body("{\"message\": \"" + successMessage + "\"}");
         } catch (Exception e) {
-            // Retourne HTTP 400 en cas d'erreur lors de l'ajout de l'utilisateur
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Erreur lors de l'ajout de l'utilisateur : " + e.getMessage());
+            // Crée un objet JSON pour la réponse d'erreur
+            String errorMessage = "Erreur lors de l'ajout de l'utilisateur : " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \"" + errorMessage + "\"}");
         }
     }
 

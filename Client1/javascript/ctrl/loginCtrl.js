@@ -5,58 +5,94 @@
  * @version 1.0 / 28.04.2024
  */
 
-// login.js
+/*
+ * Contrôleur de la vue "index.html"
+ *
+ * @Flamur Hoti
+ * @version 1.0 / 23.02.2024
+ */
 
-// Importe les fonctions depuis loginCtrl.js
-import { login, addUser } from '../services/serviceHttp.js';
-
-// Fonction pour gérer la soumission du formulaire de connexion
-function handleLoginFormSubmit(event) {
-    event.preventDefault(); // Empêche la soumission normale du formulaire
-
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-
-    // Appelle la fonction de connexion avec les identifiants
-    login(username, password)
-        .then(() => {
-            // Connexion réussie, redirige vers une autre page
-            window.location.href = '../../pages/destinations.html';
-        })
-        .catch(error => {
-            alert('Erreur lors de la connexion: ' + error);
-        });
-}
-
-// Fonction pour gérer l'ajout d'utilisateur
-function handleAddUser() {
-    const username = document.getElementById('newUsername').value;
-    const password = document.getElementById('newPassword').value;
-
-    // Appelle la fonction d'ajout d'utilisateur
-    addUser(username, password)
-        .then(response => {
-            // Affiche un message de succès ou de confirmation à l'utilisateur
-            console.log(response);
-            // Connexion réussie, redirige vers une autre page
-            window.location.href = '../../pages/login.html';
-        })
-        .catch(error => {
-            alert('Erreur lors de l\'ajout de l\'utilisateur: ' + error);
-        });
-}
+/**
+ * Méthode "start" appelée après le chargement complet de la page
+ */
 
 $(document).ready(function () {
-    var loginForm = $("#login");
-    var addUserButton = $("#signUp");
+    var butConnect = $("#login");
+    var butSignUp = $("#signUp");
 
-    // Lorsque le bouton est cliqué, cette fonction anonyme est appelée.
-    addUserButton.click(function (event) {
-        handleAddUser();
+    $.getScript("../services/serviceHttp.js", function () {
+        console.log("login servicesHttp.js chargé !");
     });
 
     // Lorsque le bouton est cliqué, cette fonction anonyme est appelée.
-    loginForm.click(function (event) {
-        handleLoginFormSubmit();
+    butConnect.click(function (event) {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        if (username != "" && password != "") {
+            login(username, password, connectSuccess, CallbackError);
+        } else {
+            alert("Erreur lors du login");
+        }
+    });
+
+    butSignUp.click(function (event) {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        if (username != "" && password != "") {
+            addUser(username, password, signUpSuccess, CallbackError);
+        } else {
+            alert("Erreur lors de l'enregistrement");
+        }
     });
 });
+
+
+function _affichePageClient() {
+    window.location.href = "https://hotif.emf-informatique.ch/133-projet-groupe3/Client1/login.html";
+}
+
+/**
+ * Methode qui permet de s'enregistrer pour la premiere fois
+ * @param {*} data 
+ * @param {*} text 
+ * @param {*} jqXHR 
+ */
+function signUpSuccess(data, text, jqXHR) {
+    if (data.result == true) {
+        alert("Sign In ok");
+        document.getElementById("txtLogin").value = "";
+        document.getElementById("password").value = "";
+    } else {
+        alert("Erreur lors de l'enregistrement");
+    }
+}
+
+function connectSuccess(data, text, jqXHR) {
+    if (data.result == true) {
+        alert(data.username + ", vous êtes connecté.");
+        // Stockez le nom d'utilisateur dans le stockage local
+        localStorage.setItem('username', data.username);
+        _affichePageClient();
+    }
+    else {
+        alert("Erreur lors du login");
+    }
+}
+
+function disconnectSuccess(data, text, jqXHR) {
+    alert("Utilisateur déconnecté");
+}
+
+/**
+ * Méthode appelée en cas d'erreur lors de la lecture du webservice
+ * @param {type} data
+ * @param {type} text
+ * @param {type} jqXHR
+ */
+function CallbackError(request, status, error) {
+    alert("erreur : " + error + ", request: " + request + ", status: " + status);
+
+}
+
+
