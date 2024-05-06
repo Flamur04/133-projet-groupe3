@@ -6,135 +6,130 @@
  * 
  */
 
-// Fonction pour récupérer les voyages depuis l'ApiGateway
-function getVoyages() {
-    return fetch('/getAllVoyages')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erreur lors de la récupération des voyages');
-            }
-            return response.json();
-        })
-        .catch(error => {
-            console.error('Erreur lors de la récupération des voyages:', error);
-            throw error; // Propage l'erreur pour que le code appelant puisse la gérer
-        });
-}
-
-// Exporte la fonction getVoyages pour qu'elle soit accessible depuis d'autres fichiers JavaScript
-export { getVoyages };
+var BASE_URL = "https://backend-3.emf4you.ch/";
 
 
-// loginCtrl.js
-
-// Fonction pour effectuer une requête de connexion à l'API Gateway
-function login(username, password) {
-    return fetch('/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+/**
+ * Fonction permettant de se connecter.
+ * @param {type} Fonction de callback lors du retour avec succès de l'appel.
+ * @param {type} Fonction de callback en cas d'erreur.
+ */
+function login(username, password, successCallback, errorCallback) {
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        data: {
+            username: username,
+            password: password,
         },
-        body: `username=${username}&password=${password}`
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Identifiants incorrects');
-            }
-            return response.text();
-        });
-}
-
-// Fonction pour effectuer une requête de déconnexion à l'API Gateway
-function logout() {
-    return fetch('/logout', {
-        method: 'POST'
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erreur lors de la déconnexion');
-            }
-            return response.text();
-        });
-}
-
-// Fonction pour effectuer une requête d'ajout d'utilisateur à l'API Gateway
-function addUser(username, password) {
-    return fetch('/addUser', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+        url: BASE_URL + "login",
+        xhrFields: {
+            withCredentials: true
         },
-        body: `username=${username}&password=${password}`
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erreur lors de l\'ajout de l\'utilisateur');
-            }
-            return response.text();
-        });
-}
-
-export { login, logout, addUser };
-
-//reservations.html
-
-// Fonction pour gérer le clic sur le bouton "Réserver Voyage"
-function handleReserverVoyage() {
-    // Vérifier si au moins un voyage est sélectionné
-    const voyagesSelectionnes = document.querySelectorAll('.destination-card input[type="checkbox"]:checked');
-    if (voyagesSelectionnes.length === 0) {
-        alert("Veuillez sélectionner au moins un voyage.");
-        return;
-    }
-
-    // Vérifier si l'utilisateur est connecté
-    if (sessionStorage.getItem('username') == null) {
-        alert("Vous devez être connecté pour effectuer une réservation.");
-        return;
-    }
-
-    // Récupérer l'identifiant de l'utilisateur à partir de la session
-    const utilisateurId = sessionStorage.getItem('utilisateurId');
-    if (!utilisateurId) {
-        alert("Impossible de récupérer l'identifiant de l'utilisateur.");
-        return;
-    }
-
-    // Récupérer les identifiants des voyages sélectionnés
-    const voyagesIds = Array.from(voyagesSelectionnes).map(voyage => voyage.dataset.id);
-
-    // Envoyer une requête à l'API Gateway pour ajouter les réservations
-    ajouterReservations(voyagesCoches, utilisateurId);
-}
-
-// Fonction pour gérer l'ajout d'une réservation
-function ajouterReservations(voyagesIds, utilisateurId) {
-    // Envoyer la requête pour ajouter la réservation pour chaque voyage sélectionné
-    voyagesIds.forEach(voyageId => {
-        fetch('/addReservation', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                fk_voyage: voyageId,
-                fk_user: utilisateurId
-            })
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erreur lors de l\'ajout de la réservation.');
-                }
-                alert('Réservation ajoutée avec succès!');
-                // Actualiser la page ou effectuer d'autres actions si nécessaire
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                alert('Une erreur est survenue lors de l\'ajout de la réservation.');
-            });
+        success: successCallback,
+        error: errorCallback,
     });
 }
 
-// Exporter les fonctions nécessaires
-export { ajouterReservations };
+/**
+ * Fonction permettant de se déconnecter.
+ * @param {type} Fonction de callback lors du retour avec succès de l'appel.
+ * @param {type} Fonction de callback en cas d'erreur.
+ */
+function logout(successCallback, errorCallback) {
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: BASE_URL + "logout",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: successCallback,
+        error: errorCallback,
+    });
+}
 
+/**
+ * Fonction permettant de récupérer les voyages.
+ * @param {type} Fonction de callback lors du retour avec succès de l'appel.
+ * @param {type} Fonction de callback en cas d'erreur.
+ */
+function getVoyages(successCallback, errorCallback) {
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: BASE_URL + "getAllVoyages",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: successCallback,
+        error: errorCallback,
+    });
+}
+/**
+ * Fonction permettant d'ajouter un utilisateur.
+ * @param {string} username Le nom d'utilisateur à ajouter.
+ * @param {string} password Le mot de passe associé à l'utilisateur.
+ * @param {function} successCallback Fonction de callback lors du retour avec succès de l'appel.
+ * @param {function} errorCallback Fonction de callback en cas d'erreur.
+ */
+function addUser(username, password, successCallback, errorCallback) {
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        data: {
+            username: username,
+            password: password
+        },
+        url: BASE_URL + "addUser",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: successCallback,
+        error: errorCallback,
+    });
+}
+
+
+/**
+ * Fonction permettant d'ajouter une réservation.
+ * @param {string} idUser L'identifiant de l'utilisateur effectuant la réservation.
+ * @param {string} idVoyage L'identifiant du voyage à réserver.
+ * @param {function} successCallback Fonction de callback lors du retour avec succès de l'appel.
+ * @param {function} errorCallback Fonction de callback en cas d'erreur.
+ */
+function addReservation(idUser, idVoyage, successCallback, errorCallback) {
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        data: {
+            idUser: idUser,
+            idVoyage: idVoyage
+        },
+        url: BASE_URL + "addReservation",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: successCallback,
+        error: errorCallback,
+    });
+}
+
+/**
+ * Fonction permettant de supprimer une réservation.
+ * @param {string} reservationId L'identifiant de la réservation à supprimer.
+ * @param {function} successCallback Fonction de callback lors du retour avec succès de l'appel.
+ * @param {function} errorCallback Fonction de callback en cas d'erreur.
+ */
+function deleteReservation(reservationId, successCallback, errorCallback) {
+    $.ajax({
+        type: "DELETE",
+        dataType: "json",
+        url: BASE_URL + "reservations/" + reservationId,
+        xhrFields: {
+            withCredentials: true
+        },
+        success: successCallback,
+        error: errorCallback,
+    });
+}
