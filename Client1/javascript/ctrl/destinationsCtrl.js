@@ -8,7 +8,7 @@
 $(document).ready(function () {
 
 
-    $.getScript("../services/serviceHttp.js", function () {
+    $.getScript("javascript/services/serviceHttp.js", function () {
         console.log("destinations servicesHttp.js chargé !");
         chargerVoyages(chargerVoyagesSuccess, CallbackError);
     });
@@ -28,7 +28,7 @@ function chargerVoyagesSuccess(data, text, jqXHR) {
 
         // Construction du contenu de la carte
         var cardContent = `
-            <img src="${voyage.image}" alt="${voyage.nom}">
+            <img src="/Client1/images/image1.jpg" alt="${voyage.nom}">
             <h2>${voyage.nom}</h2>
             <p>${voyage.pays}</p>
             <p>Date de départ: ${voyage.dateDepart}</p>

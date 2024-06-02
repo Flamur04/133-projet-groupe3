@@ -20,7 +20,7 @@ $(document).ready(function () {
     var butConnect = $("#login");
     var butSignUp = $("#signUp");
 
-    $.getScript("../services/serviceHttp.js", function () {
+    $.getScript("javascript/services/serviceHttp.js", function () {
         console.log("login servicesHttp.js chargé !");
     });
 
@@ -29,6 +29,7 @@ $(document).ready(function () {
         var username = document.getElementById("username").value;
         var password = document.getElementById("password").value;
         if (username != "" && password != "") {
+
             login(username, password, connectSuccess, CallbackError);
         } else {
             alert("Erreur lors du login");
@@ -49,7 +50,7 @@ $(document).ready(function () {
 
 
 function _affichePageClient() {
-    window.location.href = "https://hotif.emf-informatique.ch/133-projet-groupe3/Client1/login.html";
+    window.location.href = "https://hotif.emf-informatique.ch/133-projet-groupe3/Client1/destinations.html";
 }
 
 /**
@@ -69,7 +70,8 @@ function signUpSuccess(data, text, jqXHR) {
 }
 
 function connectSuccess(data, text, jqXHR) {
-    if (data.result == true) {
+
+    if (data.id != null) {
         alert(data.username + ", vous êtes connecté.");
         // Stockez le nom d'utilisateur dans le stockage local
         localStorage.setItem('username', data.username);
@@ -92,7 +94,6 @@ function disconnectSuccess(data, text, jqXHR) {
  */
 function CallbackError(request, status, error) {
     alert("erreur : " + error + ", request: " + request + ", status: " + status);
-
 }
 
 

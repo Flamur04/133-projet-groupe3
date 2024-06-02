@@ -6,7 +6,7 @@
  * 
  */
 
-var BASE_URL = "https://backend-3.emf4you.ch/";
+var BASE_URL = "http://localhost:8080/";
 
 
 /**
@@ -54,7 +54,7 @@ function logout(successCallback, errorCallback) {
  * @param {type} Fonction de callback lors du retour avec succès de l'appel.
  * @param {type} Fonction de callback en cas d'erreur.
  */
-function getVoyages(successCallback, errorCallback) {
+function chargerVoyages(successCallback, errorCallback) {
     $.ajax({
         type: "GET",
         dataType: "json",
