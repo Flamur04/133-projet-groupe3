@@ -35,7 +35,7 @@ import org.springframework.http.HttpStatus;
 @Service
 public class ServiceApiRest2 {
     private final RestTemplate restTemplate;
-    private final String Rest2Url = "http://localhost:8082";
+    private final String Rest2Url = "http://rest2:8082";
 
     @Autowired
     public ServiceApiRest2(RestTemplateBuilder restTemplateBuilder) {
@@ -57,6 +57,7 @@ public class ServiceApiRest2 {
             } else {
                 // Gérer les erreurs si nécessaire
                 return ResponseEntity.badRequest().body("Échec de la récupération des données");
+
             }
         } catch (Exception e) {
             // Gérer les exceptions (par exemple, erreurs réseau)

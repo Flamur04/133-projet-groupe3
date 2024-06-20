@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestion de Voyages et Utilisateurs</title>
-    <!-- Ajout du CDN de Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
@@ -17,8 +16,6 @@
     </style>
 </head>
 <body class="bg-gray-100">
-
-    <!-- Bande noire en haut de la page -->
     <div class="bg-black text-white p-4 flex justify-between items-center">
         <h1 class="text-center text-xl">DH Destinations Gestion</h1>
         <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
@@ -37,17 +34,13 @@
                 </select>
                 <div class="mt-4 h-64 overflow-y-auto">
                     <label class="block mb-2" for="selectionItem">Sélectionnez un élément :</label>
-                    <!-- Utilisation d'une liste à la place d'une liste déroulante -->
-                    <ul id="selectionList" class="w-full p-2 border rounded-md">
-
-                    </ul>
+                    <ul id="selectionList" class="w-full p-2 border rounded-md"></ul>
                 </div>
                 <div class="w-1/2 pl-4 mt-4">
                     <button id="addButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">Ajouter</button>
                     <button id="editButton" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mr-2">Modifier</button>
                     <button id="deleteButton" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Supprimer</button>
                 </div>
-               
             </div>
             <div class="w-1/2 pl-4">
                 <div class="mb-4">
@@ -86,13 +79,12 @@
         </div>
     </div>
 
-
-    
-    <!-- Bande noire en bas de la page -->
     <div class="bg-black text-white p-4">
         <h2 class="text-center text-xl"></h2>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
+    <script src="javascript/services/serviceHttp.js"></script>
     <script src="javascript/ctrl/indexCtrl.js"></script>
 </body>
 </html>
