@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+
 @Service
 public class ServiceApiRest1 {
 
@@ -37,10 +38,8 @@ public class ServiceApiRest1 {
         return ResponseEntity.ok(reponse.getBody());
     }
 
-    public ResponseEntity<String> addUser(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<?> addUser(@RequestParam String username, @RequestParam String password) {
         String url = apiGatewayUrl + "/addUser";
-
-        // User userDTO = new User(username, password);
 
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
@@ -51,7 +50,7 @@ public class ServiceApiRest1 {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
 
         try {
-            ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+            ResponseEntity<?> response = restTemplate.postForEntity(url, requestEntity, String.class);
             // Vérifier la réponse
             if (response.getStatusCode().is2xxSuccessful()) {
                 // Traitement réussi
@@ -67,6 +66,8 @@ public class ServiceApiRest1 {
 
     public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
         String url = apiGatewayUrl + "/login";
+
+        
 
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
@@ -91,22 +92,6 @@ public class ServiceApiRest1 {
         }
     }
 
-    public ResponseEntity<String> logout() {
-        // Appeler votre API Gateway pour gérer la déconnexion
-        String url = apiGatewayUrl + "/logout";
-
-        // Effectuer la requête POST pour la déconnexion
-        ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
-
-        // Retourner la réponse avec le code de statut approprié et un message
-        if (response.getStatusCode().is2xxSuccessful()) {
-            // Succès (code de statut dans la plage des 2xx)
-            return ResponseEntity.ok("Déconnexion réussie");
-        } else {
-            // Erreur (code de statut dans la plage des 4xx)
-            return ResponseEntity.badRequest().body("Échec de la déconnexion");
-        }
-    }
 
     public ResponseEntity<String> addReservation(@RequestParam Integer fk_voyage, @RequestParam Integer fk_user) {
         // Appeler votre API Gateway pour gérer la déconnexion

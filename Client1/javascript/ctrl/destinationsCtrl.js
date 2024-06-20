@@ -14,6 +14,12 @@ $(document).ready(function () {
     });
 
 
+    var butLogout = $("#logout");
+
+    butLogout.click(function (event) {
+        logout(disconnectSuccess, CallbackError);
+    });
+
 });
 /*
 
@@ -78,6 +84,13 @@ function chargerVoyagesSuccess(data, text, jqXHR) {
     });
 }
 
+function disconnectSuccess(data, text, jqXHR) {
+    if (data === true) {
+        alert("Utilisateur déconnecté");
+        window.location.reload();
+        window.location.href = "http://localhost:5500/Client1/login.html";
+    }
+}
 
 
 

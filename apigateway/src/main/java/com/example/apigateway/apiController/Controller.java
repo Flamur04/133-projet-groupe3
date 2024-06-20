@@ -61,19 +61,22 @@ public class Controller {
     }
 
     @PostMapping("/addUser")
-    public ResponseEntity<String> addUser(@RequestParam String username,
+    public ResponseEntity<?> addUser(@RequestParam String username,
             @RequestParam String password) {
         try {
             // Ajoute l'utilisateur en utilisant le service approprié
-            serviceApiRest1.addUser(username, password);
+            ResponseEntity<?> authenticated = serviceApiRest1.addUser(username, password);
+            if (authenticated.getStatusCode().is2xxSuccessful()) {
+                return ResponseEntity.ok().body(true);
+            } else {
+                return ResponseEntity.ok().body(false);
+            }
 
-            // Crée un objet JSON pour la réponse de succès
-            String successMessage = "Utilisateur ajouté avec succès";
-            return ResponseEntity.ok().body("{\"message\": \"" + successMessage + "\"}");
         } catch (Exception e) {
             // Crée un objet JSON pour la réponse d'erreur
-            String errorMessage = "Erreur lors de l'ajout de l'utilisateur : " + e.getMessage();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \"" + errorMessage + "\"}");
+            // String errorMessage = "Erreur lors de l'ajout de l'utilisateur : " +
+            // e.getMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         }
     }
 
@@ -113,21 +116,23 @@ public class Controller {
         } catch (Exception e) {
             // Retourne HTTP 400 en cas d'erreur lors de la déconnexion
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Collections.singletonMap("error", "Erreur lors durant le login : " + e.getMessage()));
+                    .body(Collections.singletonMap("error", "Erreur durant le login : " + e.getMessage()));
         }
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
-        try {
-            // Effectue la déconnexion en invalidant la session
-            session.invalidate();
-            // Retourne HTTP 200 en cas de succès de la déconnexion
-            return ResponseEntity.ok("Déconnexion réussie");
-        } catch (Exception e) {
-            // Retourne HTTP 400 en cas d'erreur lors de la déconnexion
+    public ResponseEntity<?> logout(HttpSession session) {
+        if (session.getAttribute("username") != null) {
+            try {
+                session.invalidate();
+                return ResponseEntity.ok(true);
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Collections.singletonMap("error", "Erreur lors de la déconnexion : " + e.getMessage()));
+            }
+        } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Erreur lors de la déconnexion : " + e.getMessage());
+                    .body(Collections.singletonMap("error", "Aucune session ouverte"));
         }
     }
 

@@ -19,6 +19,7 @@
 $(document).ready(function () {
     var butConnect = $("#login");
     var butSignUp = $("#signUp");
+    
 
     $.getScript("javascript/services/serviceHttp.js", function () {
         console.log("login servicesHttp.js chargé !");
@@ -28,6 +29,7 @@ $(document).ready(function () {
     butConnect.click(function (event) {
         var username = document.getElementById("username").value;
         var password = document.getElementById("password").value;
+        console.log(username);
 
         if (username != "" && password != "") {
             login(username, password, connectSuccess, CallbackError);
@@ -46,6 +48,7 @@ $(document).ready(function () {
             alert("Veuillez remplire les champs.");
         }
     });
+   
 });
 
 
@@ -70,22 +73,18 @@ function signUpSuccess(data, text, jqXHR) {
 }
 
 function connectSuccess(data, text, jqXHR) {
-
-    console.log("ok");
-
-    /*if (data.id != null) {
+    console.log(data);
+    if (data.id != null) {
         alert(data.username + ", vous êtes connecté.");
         // Stockez le nom d'utilisateur dans le stockage local
         localStorage.setItem('username', data.username);
         _affichePageClient();
     } else {
         alert("Erreur lors du login");
-    }*/
+    }
 }
 
-function disconnectSuccess(data, text, jqXHR) {
-    alert("Utilisateur déconnecté");
-}
+
 
 /**
  * Méthode appelée en cas d'erreur lors de la lecture du webservice

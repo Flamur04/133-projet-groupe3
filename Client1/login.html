@@ -11,9 +11,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- Inclure jQuery depuis un CDN -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
     <!-- Inclure le fichier JavaScript -->
     <script type="text/javascript" src="javascript/ctrl/loginCtrl.js"></script>
-
     <style>
         .home-link {
             position: fixed;
@@ -28,42 +28,44 @@
 
     <div class="flex justify-center items-center h-full">
         <div class="w-full max-w-xs">
-            <form id="loginForm" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <h2 class="text-center text-xl mb-4">Connexion</h2>
+            <h2 class="text-center text-xl mb-4">Connexion</h2>
 
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
-                        Nom :
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="username" type="text" name="username" required placeholder="Nom d'utilisateur">
-                </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+                    Nom :
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="username" type="text" name="username" required placeholder="Nom d'utilisateur">
+            </div>
 
-                <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-                        Mot de passe :
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="password" type="password" name="password" required placeholder="Mot de passe">
-                </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                    Mot de passe :
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="password" type="password" name="password" required placeholder="Mot de passe">
+            </div>
 
-                <div class="flex items-center justify-between">
-                    <button id="login"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="submit">
-                        Se connecter
-                    </button>
-                    <a id="signUp"
-                        class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-                        href="#">S'enregistrer</a>
-                    <span id="loginError" class="text-red-500"></span>
-                </div>
-            </form>
+            <div class="flex items-center justify-between">
+                <button id="login"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    type="button">
+                    Se connecter
+                </button>
+                <a id="signUp" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+                    href="#">S'enregistrer</a>
+                <span id="loginError" class="text-red-500"></span>
+            </div>
 
         </div>
+
     </div>
+
+
+
+
 
     <!-- Ajout de l'emoji pour le lien vers la page d'accueil -->
     <a href="index.html" class="home-link text-blue-500 hover:text-blue-800">&#x1F3E0;</a>
