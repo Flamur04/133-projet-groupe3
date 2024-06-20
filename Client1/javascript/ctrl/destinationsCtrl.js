@@ -15,6 +15,7 @@ $(document).ready(function () {
 
 
 });
+/*
 
 function chargerVoyagesSuccess(data, text, jqXHR) {
     // Sélection de la section où les cartes de destination seront ajoutées
@@ -35,6 +36,38 @@ function chargerVoyagesSuccess(data, text, jqXHR) {
             <p>Date de retour: ${voyage.dateRetour}</p>
             <p>Prix: ${voyage.prix}</p>
             <p>${voyage.description}</p>
+        `;
+
+        // Ajout du contenu à la carte
+        card.innerHTML = cardContent;
+
+        // Ajout de la carte à la section
+        destinationsSection.appendChild(card);
+    });
+}
+*/
+
+function chargerVoyagesSuccess(data, text, jqXHR) {
+    // Sélection de la section où les cartes de destination seront ajoutées
+    var destinationsSection = document.getElementById("destinationsSection");
+
+    // Parcourir les données (supposons que data soit un tableau d'objets JSON)
+    data.forEach(function (voyage) {
+        // Création de la carte de voyage
+        var card = document.createElement("div");
+        card.classList.add("card");
+
+        // Construction du contenu de la carte
+        var cardContent = `
+            <img src="/Client1/images/image1.jpg" alt="${voyage.nom}" class="card-image">
+            <div class="card-content">
+                <h2 class="card-title">${voyage.nom}</h2>
+                <p class="card-description">${voyage.pays}</p>
+                <p class="card-description">Date de départ: ${voyage.dateDepart}</p>
+                <p class="card-description">Date de retour: ${voyage.dateRetour}</p>
+                <p class="card-description">Prix: ${voyage.prix}</p>
+                <p class="card-description">${voyage.description}</p>
+            </div>
         `;
 
         // Ajout du contenu à la carte

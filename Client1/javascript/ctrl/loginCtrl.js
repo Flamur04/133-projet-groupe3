@@ -28,8 +28,8 @@ $(document).ready(function () {
     butConnect.click(function (event) {
         var username = document.getElementById("username").value;
         var password = document.getElementById("password").value;
-        if (username != "" && password != "") {
 
+        if (username != "" && password != "") {
             login(username, password, connectSuccess, CallbackError);
         } else {
             alert("Erreur lors du login");
@@ -43,14 +43,14 @@ $(document).ready(function () {
         if (username != "" && password != "") {
             addUser(username, password, signUpSuccess, CallbackError);
         } else {
-            alert("Erreur lors de l'enregistrement");
+            alert("Veuillez remplire les champs.");
         }
     });
 });
 
 
 function _affichePageClient() {
-    window.location.href = "https://hotif.emf-informatique.ch/133-projet-groupe3/Client1/destinations.html";
+    window.location.href = "http://localhost:5500/Client1/destinations.html";
 }
 
 /**
@@ -60,10 +60,10 @@ function _affichePageClient() {
  * @param {*} jqXHR 
  */
 function signUpSuccess(data, text, jqXHR) {
-    if (data.result == true) {
+    console.log(data);
+    if (data === true) {
         alert("Sign In ok");
-        document.getElementById("txtLogin").value = "";
-        document.getElementById("password").value = "";
+        window.location.reload();
     } else {
         alert("Erreur lors de l'enregistrement");
     }
@@ -71,15 +71,16 @@ function signUpSuccess(data, text, jqXHR) {
 
 function connectSuccess(data, text, jqXHR) {
 
-    if (data.id != null) {
+    console.log("ok");
+
+    /*if (data.id != null) {
         alert(data.username + ", vous êtes connecté.");
         // Stockez le nom d'utilisateur dans le stockage local
         localStorage.setItem('username', data.username);
         _affichePageClient();
-    }
-    else {
+    } else {
         alert("Erreur lors du login");
-    }
+    }*/
 }
 
 function disconnectSuccess(data, text, jqXHR) {

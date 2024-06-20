@@ -56,7 +56,7 @@ public class Controller {
     }
 
     @PostMapping(path = "addUser")
-    public ResponseEntity<String> addUser(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<?> addUser(@RequestParam String username, @RequestParam String password) {
         try {
             // Hacher le mot de passe
             String hashedPassword = passwordEncoder.hashPassword(password);
@@ -65,7 +65,7 @@ public class Controller {
             // passe haché et le statut d'administrateur
             userService.addUser(username, hashedPassword);
 
-            return ResponseEntity.ok("Utilisateur ajouté avec succès");
+            return ResponseEntity.ok(true);
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
