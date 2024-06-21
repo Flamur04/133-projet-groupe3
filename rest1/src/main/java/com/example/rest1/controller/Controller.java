@@ -74,7 +74,7 @@ public class Controller {
 
     // Handler pour GET
     @GetMapping(path = "/getUsers")
-    public ResponseEntity<Iterable<User>> getUsers(HttpSession session) {
+    public ResponseEntity<Iterable<User>> getUsers() {
         // Utilisez la session comme nécessaire
         Iterable<User> users = userService.findAllUsers();
         return ResponseEntity.ok(users);
@@ -102,8 +102,16 @@ public class Controller {
         }
     }
 
+       // Handler pour GET
+       @GetMapping(path = "/getReservationUser")
+       public ResponseEntity<Iterable<Reservation>> getReservationUser(Integer id) {
+           // Utilisez la session comme nécessaire
+           Iterable<Reservation> reservations = reservationService.getUserReservations(id);
+           return ResponseEntity.ok(reservations);
+       }
+
     @PostMapping(path = "/addReservation")
-    public ResponseEntity<String> addReservation(@RequestParam Integer fk_voyage, @RequestParam Integer fk_user) {
+    public ResponseEntity<?> addReservation(@RequestParam Integer fk_voyage, @RequestParam Integer fk_user) {
         try {
             // Créer une nouvelle réservation
             Reservation reservation = new Reservation();
@@ -113,9 +121,9 @@ public class Controller {
             if (reservation != null) {
                 // Ajouter la réservation en utilisant le service de réservation
                 reservationService.addReservation(reservation);
-                return ResponseEntity.ok("Réservation ajoutée avec succès");
+                return ResponseEntity.ok(true);
             } else {
-                return ResponseEntity.ok("ERREUR !!");
+                return ResponseEntity.ok(false);
             }
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

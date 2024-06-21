@@ -19,7 +19,7 @@
 $(document).ready(function () {
     var butConnect = $("#login");
     var butSignUp = $("#signUp");
-    
+
 
     $.getScript("javascript/services/serviceHttp.js", function () {
         console.log("login servicesHttp.js chargé !");
@@ -48,7 +48,7 @@ $(document).ready(function () {
             alert("Veuillez remplire les champs.");
         }
     });
-   
+
 });
 
 
@@ -76,11 +76,13 @@ function connectSuccess(data, text, jqXHR) {
     console.log(data);
     if (data.id != null) {
         alert(data.username + ", vous êtes connecté.");
-        // Stockez le nom d'utilisateur dans le stockage local
-        localStorage.setItem('username', data.username);
+        // Stockez le nom d'utilisateur et l'ID dans le stockage de session
+        sessionStorage.setItem('username', data.username);
+        sessionStorage.setItem('idUser', data.id);
         _affichePageClient();
-    } else {
-        alert("Erreur lors du login");
+    } else if (jqXHR.status === 401) {
+        alert("Identifiants invalides. Veuillez réessayer.");
+        return;
     }
 }
 
@@ -93,7 +95,11 @@ function connectSuccess(data, text, jqXHR) {
  * @param {type} jqXHR
  */
 function CallbackError(request, status, error) {
-    alert("erreur : " + error + ", request: " + request + ", status: " + status);
+    if (request.status === 401) {
+        alert("Erreur durant le login : 401 : Identifiants invalides.");
+    } else {
+        alert("Erreur durant le login : 401 : Identifiants invalides.");
+    }
 }
 
 

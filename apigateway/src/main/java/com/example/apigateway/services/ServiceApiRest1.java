@@ -1,6 +1,7 @@
 package com.example.apigateway.services;
 
 import org.springframework.http.MediaType;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -14,7 +15,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
 
 @Service
 public class ServiceApiRest1 {
@@ -32,9 +32,9 @@ public class ServiceApiRest1 {
         return restTemplate.getForEntity(url, String.class);
     }
 
-    public ResponseEntity<String> getUsers() {
+    public ResponseEntity<?> getUsers() {
         String url = apiGatewayUrl + "/getUsers";
-        ResponseEntity<String> reponse = restTemplate.getForEntity(url, String.class);
+        ResponseEntity<?> reponse = restTemplate.getForEntity(url, String.class);
         return ResponseEntity.ok(reponse.getBody());
     }
 
@@ -67,8 +67,6 @@ public class ServiceApiRest1 {
     public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
         String url = apiGatewayUrl + "/login";
 
-        
-
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
         params.add("password", password);
@@ -92,8 +90,7 @@ public class ServiceApiRest1 {
         }
     }
 
-
-    public ResponseEntity<String> addReservation(@RequestParam Integer fk_voyage, @RequestParam Integer fk_user) {
+    public ResponseEntity<?> addReservation(@RequestParam Integer fk_voyage, @RequestParam Integer fk_user) {
         // Appeler votre API Gateway pour gérer la déconnexion
         String url = apiGatewayUrl + "/addReservation";
 

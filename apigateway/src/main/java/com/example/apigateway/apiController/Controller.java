@@ -42,21 +42,36 @@ public class Controller {
         return ResponseEntity.ok(responseEntity.getBody());
     }
 
+    /*
+     * @GetMapping("/getUserConnected")
+     * public ResponseEntity<String> getUsersConnected(HttpSession session) {
+     * // Vérifier si l'utilisateur est connecté
+     * if (session.getAttribute("username") != null) {
+     * // L'utilisateur est connecté, procéder à la récupération des utilisateurs
+     * ResponseEntity<String> getUser = serviceApiRest1.getUsers();
+     * if (getUser.getStatusCode().is2xxSuccessful()) {
+     * return ResponseEntity.ok(getUser.getBody());
+     * } else {
+     * // Si l'authentification échoue, retourne HTTP 400 avec le message d'erreur
+     * return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getUser.getBody());
+     * }
+     * } else {
+     * // L'utilisateur n'est pas connecté, renvoyer une erreur non autorisée
+     * return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
+     * body("Utilisateur non connecté");
+     * }
+     * }
+     */
+
     @GetMapping("/getUsers")
-    public ResponseEntity<String> getUsers(HttpSession session) {
-        // Vérifier si l'utilisateur est connecté
-        if (session.getAttribute("username") != null) {
-            // L'utilisateur est connecté, procéder à la récupération des utilisateurs
-            ResponseEntity<String> getUser = serviceApiRest1.getUsers();
-            if (getUser.getStatusCode().is2xxSuccessful()) {
-                return ResponseEntity.ok(getUser.getBody());
-            } else {
-                // Si l'authentification échoue, retourne HTTP 400 avec le message d'erreur
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getUser.getBody());
-            }
+    public ResponseEntity<?> getUsers() {
+        // L'utilisateur est connecté, procéder à la récupération des utilisateurs
+        ResponseEntity<?> getUser = serviceApiRest1.getUsers();
+        if (getUser.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.ok(getUser.getBody());
         } else {
-            // L'utilisateur n'est pas connecté, renvoyer une erreur non autorisée
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Utilisateur non connecté");
+            // Si l'authentification échoue, retourne HTTP 400 avec le message d'erreur
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getUser.getBody());
         }
     }
 
@@ -127,17 +142,16 @@ public class Controller {
                 session.invalidate();
                 return ResponseEntity.ok(true);
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap("error", "Erreur lors de la déconnexion : " + e.getMessage()));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
             }
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Collections.singletonMap("error", "Aucune session ouverte"));
+                    .body(false);
         }
     }
 
     @PostMapping("/addReservation")
-    public ResponseEntity<String> addReservation(@RequestParam Integer Fk_voyage, HttpSession session) {
+    public ResponseEntity<?> addReservation(@RequestParam Integer Fk_voyage, HttpSession session) {
         try {
 
             if (session.getAttribute("username") == null) {
@@ -150,7 +164,7 @@ public class Controller {
 
             // Ajoute la réservation en utilisant le service approprié avec les IDs du
             // voyage et de l'utilisateur
-            ResponseEntity<String> response = serviceApiRest1.addReservation(Fk_voyage, 9);
+            ResponseEntity<?> response = serviceApiRest1.addReservation(Fk_voyage, 1);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 // Retourne HTTP 200 avec le corps de la réponse en cas de succès
@@ -168,7 +182,7 @@ public class Controller {
     }
 
     @DeleteMapping("/deleteReservation")
-    public ResponseEntity<String> deleteReservation(@RequestParam Integer id, HttpSession session) {
+    public ResponseEntity<?> deleteReservation(@RequestParam Integer id, HttpSession session) {
         try {
 
             if (session.getAttribute("username") == null) {
@@ -179,10 +193,10 @@ public class Controller {
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 // Retourne HTTP 200 avec le corps de la réponse en cas de succès
-                return ResponseEntity.ok(response.getBody());
+                return ResponseEntity.ok(true);
             } else {
                 // Retourne HTTP 400 avec un message d'erreur en cas d'échec
-                return ResponseEntity.badRequest().body(response.getBody());
+                return ResponseEntity.badRequest().body(false);
             }
 
         } catch (Exception e) {
