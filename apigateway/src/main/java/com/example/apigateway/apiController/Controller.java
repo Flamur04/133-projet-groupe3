@@ -44,26 +44,6 @@ public class Controller {
         return ResponseEntity.ok(responseEntity.getBody());
     }
 
-    /*
-     * @GetMapping("/getUserConnected")
-     * public ResponseEntity<String> getUsersConnected(HttpSession session) {
-     * // Vérifier si l'utilisateur est connecté
-     * if (session.getAttribute("username") != null) {
-     * // L'utilisateur est connecté, procéder à la récupération des utilisateurs
-     * ResponseEntity<String> getUser = serviceApiRest1.getUsers();
-     * if (getUser.getStatusCode().is2xxSuccessful()) {
-     * return ResponseEntity.ok(getUser.getBody());
-     * } else {
-     * // Si l'authentification échoue, retourne HTTP 400 avec le message d'erreur
-     * return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getUser.getBody());
-     * }
-     * } else {
-     * // L'utilisateur n'est pas connecté, renvoyer une erreur non autorisée
-     * return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
-     * body("Utilisateur non connecté");
-     * }
-     * }
-     */
 
     @GetMapping("/getUsers")
     public ResponseEntity<?> getUsers() {
