@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var butConnect = $("#login");
+    var butConnect = $("#butConnect");
     
 
     $.getScript("javascript/services/serviceHttp.js", function () {
@@ -19,24 +19,11 @@ $(document).ready(function () {
         }
     });
 
-    butSignUp.click(function (event) {
-        var username = document.getElementById("username").value;
-        var password = document.getElementById("password").value;
-
-        if (username != "" && password != "") {
-            addUser(username, password, signUpSuccess, CallbackError);
-        } else {
-            alert("Veuillez remplire les champs.");
-        }
-    });
-   
-});
 
 
 function _affichePageClient() {
     window.location.href = "http://localhost:5500/Client2/index.html";
 }
-
 
 
 function connectSuccess(data, text, jqXHR) {
@@ -63,4 +50,5 @@ function CallbackError(request, status, error) {
     alert("erreur : " + error + ", request: " + request + ", status: " + status);
 }
 
+})
 

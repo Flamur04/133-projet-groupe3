@@ -217,8 +217,13 @@ public class Controller {
     }
 
     @GetMapping("/getAllPays")
-    public ResponseEntity<String> getAllPays() {
+    public ResponseEntity<String> getAllPays(HttpSession session) {
         try {
+            if (session.getAttribute("username") == null) {
+                // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+            }
+
             // Appelle la méthode du service
             ResponseEntity<String> response = serviceApiRest2.getAllPays();
 
@@ -237,8 +242,12 @@ public class Controller {
     }
 
     @PostMapping("/addNewPays")
-    public ResponseEntity<String> addNewPays(@RequestParam String name) {
+    public ResponseEntity<String> addNewPays(@RequestParam String name, HttpSession session) {
         try {
+            if (session.getAttribute("username") == null) {
+                // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+            }
             // Appelle la méthode du service avec le nom du pays
             ResponseEntity<String> response = serviceApiRest2.addNewPays(name);
 
@@ -257,8 +266,12 @@ public class Controller {
     }
 
     @PutMapping("/updatePays/{id}")
-    public ResponseEntity<String> updatePays(@PathVariable int id, @RequestParam String name) {
+    public ResponseEntity<String> updatePays(@PathVariable int id, @RequestParam String name, HttpSession session) {
         try {
+            if (session.getAttribute("username") == null) {
+                // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+            }
             // Appelle la méthode du service avec l'ID et le nom du pays
             ResponseEntity<String> response = serviceApiRest2.updatePays(id, name);
 
@@ -277,8 +290,12 @@ public class Controller {
     }
 
     @DeleteMapping("/deletePays/{id}")
-    public ResponseEntity<String> deletePays(@PathVariable int id) {
+    public ResponseEntity<String> deletePays(@PathVariable int id, HttpSession session) {
         try {
+            if (session.getAttribute("username") == null) {
+                // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+            }
             // Appelle la méthode du service avec l'ID du pays
             ResponseEntity<String> response = serviceApiRest2.deletePays(id);
 
@@ -300,8 +317,13 @@ public class Controller {
     public ResponseEntity<String> addNewVoyage(@RequestParam String name, @RequestParam String description,
             @RequestParam int prix, @RequestParam String fkPays,
             @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateDepart,
-            @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateRetour) {
+            @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateRetour,
+            HttpSession session) {
         try {
+            if (session.getAttribute("username") == null) {
+                // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+            }
             // Appelle la méthode du service avec les informations du voyage
             ResponseEntity<String> response = serviceApiRest2.addNewVoyage(name, description, prix, fkPays, dateDepart,
                     dateRetour);
@@ -323,8 +345,13 @@ public class Controller {
     @PutMapping("/updateVoyage/{id}")
     public ResponseEntity<String> updateVoyage(@PathVariable int id, @RequestParam String name,
             @RequestParam String description, @RequestParam int prix, @RequestParam String fkPays,
-            @RequestParam int version, @RequestParam LocalDate dateDepart, @RequestParam LocalDate dateRetour) {
+            @RequestParam int version, @RequestParam LocalDate dateDepart, @RequestParam LocalDate dateRetour,
+            HttpSession session) {
         try {
+            if (session.getAttribute("username") == null) {
+                // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+            }
             // Appelle la méthode du service avec les informations du voyage
             ResponseEntity<String> response = serviceApiRest2.updateVoyage(id, name, description, prix, fkPays, version,
                     dateDepart, dateRetour);
@@ -344,8 +371,12 @@ public class Controller {
     }
 
     @DeleteMapping("/deleteVoyage/{id}")
-    public ResponseEntity<String> deleteVoyage(@PathVariable int id) {
+    public ResponseEntity<String> deleteVoyage(@PathVariable int id, HttpSession session) {
         try {
+            if (session.getAttribute("username") == null) {
+                // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+            }
             // Appelle la méthode du service avec l'ID du voyage
             ResponseEntity<String> response = serviceApiRest2.deleteVoyage(id);
 

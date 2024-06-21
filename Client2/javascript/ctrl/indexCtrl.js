@@ -2,12 +2,16 @@ $(document).ready(function () {
     $.getScript("javascript/services/serviceHttp.js", function () {
         console.log("index servicesHttp.js chargé !");
         getAllPays(paysSuccess, CallbackError);
+        getUsers(userSucess, CallbackError);
         getAllVoyages(voyageSuccess, CallbackError);
+
+        // Attachez le listener ici
+        $('#logoutBtn').on('click', function (event) {
+            logout(disconnectSuccess, CallbackError);
+        });
     });
 
     var selectionType = $('#selectionType');
-
-    
 
     // Écoutez les changements de sélection
     $('#selectionType').on('change', function () {
@@ -17,7 +21,7 @@ $(document).ready(function () {
         } else if (selectedValue === 'voyage') {
             getAllVoyages(voyageSuccess, CallbackError);
         } else if (selectedValue === 'utilisateurs') {
-            // getAllUtilisateurs(utilisateursSuccess, CallbackError);
+            getUsers(userSucess, CallbackError);
         }
     });
 
@@ -61,10 +65,32 @@ function voyageSuccess(data, text, jqXHR) {
     });
 }
 
+function userSucess(data, text, jqXHR) {
+    var userArray = JSON.parse(data);
+    var selectionList = $('#selectionList');
+    selectionList.empty();
+
+    userArray.forEach(function (user) {
+        var li = $('<li>').text(user.username).data('id', userArray.id);
+        selectionList.append(li);
+    });
+}
+
 function deleteSuccess(response) {
+
+
     alert("Voyage supprimé avec succès");
     // Recharger la liste des voyages après suppression
     getAllVoyages(voyageSuccess, CallbackError);
+}
+
+function disconnectSuccess(data, text, jqXHR) {
+    if (data === true) {
+        console.log("déconnecté");
+        window.location.href = "http://localhost:5500/Client2/login.html";
+    } else {
+        alert("Aucun Utilisateur connecté");
+    }
 }
 
 function CallbackError(request, status, error) {
