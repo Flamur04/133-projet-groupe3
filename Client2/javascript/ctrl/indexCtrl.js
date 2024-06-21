@@ -1,75 +1,72 @@
 $(document).ready(function () {
-
     $.getScript("javascript/services/serviceHttp.js", function () {
         console.log("index servicesHttp.js chargé !");
-        // L'utilisateur a sélectionné "Pays", appelez getAllPays
         getAllPays(paysSuccess, CallbackError);
         getAllVoyages(voyageSuccess, CallbackError);
     });
 
     var selectionType = $('#selectionType');
 
-    var textField1 = $('#textField1');
-    var textField2 = $('#textField2');
-    var textField3 = $('#textField3');
-    var textField4 = $('#textField4');
-    var textField5 = $('#textField5');
-    var textField6 = $('#textField6');
-    var textField7 = $('#textField7');
-    var textField8 = $('#textField8');
+    
 
-
-    // Ecoutez les changements de sélection
+    // Écoutez les changements de sélection
     $('#selectionType').on('change', function () {
         var selectedValue = $(this).val();
         if (selectedValue === 'pays') {
-            
             getAllPays(paysSuccess, CallbackError);
         } else if (selectedValue === 'voyage') {
-            
             getAllVoyages(voyageSuccess, CallbackError);
         } else if (selectedValue === 'utilisateurs') {
-
-            // getAllPays(paysSuccess, errorCallback);
+            // getAllUtilisateurs(utilisateursSuccess, CallbackError);
         }
     });
 
-    // Ecoutez les clics sur les éléments de la liste
+    // Écoutez les clics sur les éléments de la liste pour sélectionner un élément
     $('#selectionList').on('click', 'li', function () {
-    var selectedPays = $(this).text();
-    console.log('Pays sélectionné :', selectedPays);
+        $('#selectionList li').removeClass('selected');
+        $(this).addClass('selected');
+    });
+
+    // Écoutez les clics sur le bouton de suppression
+    $('#deleteButton').on('click', function () {
+        var selectedElement = $('#selectionList li.selected');
+        if (selectedElement.length) {
+            var id = selectedElement.data('id');
+            deleteVoyage(id, deleteSuccess, CallbackError);
+        } else {
+            alert("Veuillez sélectionner un élément à supprimer.");
+        }
+    });
 });
-
-
-});
-
 
 function paysSuccess(data, text, jqXHR) {
     var paysArray = JSON.parse(data);
-
     var selectionList = $('#selectionList');
     selectionList.empty();
 
     paysArray.forEach(function (pays) {
-        var li = $('<li>').text(pays.nom);
+        var li = $('<li>').text(pays.nom).data('id', pays.id);
         selectionList.append(li);
     });
 }
 
 function voyageSuccess(data, text, jqXHR) {
     var voyageArray = JSON.parse(data);
-
     var selectionList = $('#selectionList');
     selectionList.empty();
 
     voyageArray.forEach(function (voyage) {
-        var li = $('<li>').text(voyage.nom);
+        var li = $('<li>').text(voyage.nom).data('id', voyage.pkVoyage);
         selectionList.append(li);
     });
 }
 
+function deleteSuccess(response) {
+    alert("Voyage supprimé avec succès");
+    // Recharger la liste des voyages après suppression
+    getAllVoyages(voyageSuccess, CallbackError);
+}
 
 function CallbackError(request, status, error) {
-    alert("erreur : " + error + ", request: " + request + ", status: " + status);
-    getAllPays(paysSuccess, CallbackError);
+    alert("Erreur : " + error + ", request: " + request + ", status: " + status);
 }

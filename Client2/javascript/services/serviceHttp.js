@@ -72,3 +72,23 @@ function getAllPays(successCallback, errorCallback) {
     });
 }
 
+
+/**
+ * Fonction permettant de supprimer un voyage.
+ * @param {int} id - ID du voyage à supprimer.
+ * @param {Function} successCallback - Callback en cas de succès.
+ * @param {Function} errorCallback - Callback en cas d'erreur.
+ */
+function deleteVoyage(id, successCallback, errorCallback) {
+    $.ajax({
+        type: "DELETE",
+        url: BASE_URL + "deleteVoyage/" + id,
+        xhrFields: {
+            withCredentials: true
+        },
+        success: successCallback,
+        error: errorCallback,
+    });
+}
+
+
