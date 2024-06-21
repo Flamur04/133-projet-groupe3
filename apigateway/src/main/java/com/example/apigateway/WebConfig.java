@@ -14,5 +14,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("https://hotif.emf-informatique.ch", "https://dufourj.emf-informatique.ch", "http://localhost:5500")
                 .allowedHeaders("*")
                 .allowCredentials(true);
+                
     }
 }

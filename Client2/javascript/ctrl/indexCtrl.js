@@ -1,98 +1,75 @@
-class IndexCtrl {
-    constructor() {
-        this.serviceHttp = new ServiceHttp();
+$(document).ready(function () {
 
-        this.selectionType = document.getElementById('selectionType');
-        this.selectionList = document.getElementById('selectionList');
-        this.textField1 = document.getElementById('textField1');
-        this.textField2 = document.getElementById('textField2');
-        this.textField3 = document.getElementById('textField3');
-        this.textField4 = document.getElementById('textField4');
-        this.textField5 = document.getElementById('textField5');
-        this.textField6 = document.getElementById('textField6');
-        this.textField7 = document.getElementById('textField7');
-        this.textField8 = document.getElementById('textField8');
+    $.getScript("javascript/services/serviceHttp.js", function () {
+        console.log("index servicesHttp.js chargé !");
+        // L'utilisateur a sélectionné "Pays", appelez getAllPays
+        getAllPays(paysSuccess, CallbackError);
+        getAllVoyages(voyageSuccess, CallbackError);
+    });
 
-        this.selectionType.value = 'pays';
-        this.populateList(this.selectionType.value);
+    var selectionType = $('#selectionType');
 
-        this.selectionType.addEventListener('change', () => {
-            const type = this.selectionType.value;
-            this.populateList(type);
-            this.handleVisibility(type);
-        });
+    var textField1 = $('#textField1');
+    var textField2 = $('#textField2');
+    var textField3 = $('#textField3');
+    var textField4 = $('#textField4');
+    var textField5 = $('#textField5');
+    var textField6 = $('#textField6');
+    var textField7 = $('#textField7');
+    var textField8 = $('#textField8');
 
-        this.selectionList.addEventListener('mouseover', (event) => {
-            if (event.target.tagName === 'LI') {
-                event.target.style.cursor = 'pointer';
-            }
-        });
 
-        this.selectionList.addEventListener('click', (event) => {
-            if (event.target.tagName === 'LI') {
-                const selectedItem = event.target.textContent;
-                this.textField1.value = selectedItem;
-            }
-        });
-    }
+    // Ecoutez les changements de sélection
+    $('#selectionType').on('change', function () {
+        var selectedValue = $(this).val();
+        if (selectedValue === 'pays') {
+            
+            getAllPays(paysSuccess, CallbackError);
+        } else if (selectedValue === 'voyage') {
+            
+            getAllVoyages(voyageSuccess, CallbackError);
+        } else if (selectedValue === 'utilisateurs') {
 
-    populateList(type) {
-        this.selectionList.innerHTML = '';
-        let items = [];
-        if (type === 'utilisateurs') {
-            items = this.utilisateurs;
-        } else if (type === 'pays') {
-            this.populateCountries();
-        } else if (type === 'voyage') {
-            items = this.voyage;
+            // getAllPays(paysSuccess, errorCallback);
         }
-        items.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = item;
-            this.selectionList.appendChild(li);
-        });
-    }
+    });
+
+    // Ecoutez les clics sur les éléments de la liste
+    $('#selectionList').on('click', 'li', function () {
+    var selectedPays = $(this).text();
+    console.log('Pays sélectionné :', selectedPays);
+});
 
 
-
-    clearList() {
-        this.selectionList.innerHTML = '';
-    }
-
-    populateCountries() {
-        this.serviceHttp.getAllPays((pays) => {
-            this.populateListItems(pays);
-        }, (error) => {
-            console.error("Erreur lors du chargement des pays: ", error);
-        });
-    }
-
-    populateListItems(data) {
-        data.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = item;
-            this.selectionList.appendChild(li);
-        });
-    }   
-
-    handleVisibility(type) {
-        const textFields = [this.textField1, this.textField2, this.textField3, this.textField4, this.textField5, this.textField6, this.textField7, this.textField8];
-        const labels = [this.textField1.previousElementSibling, this.textField2.previousElementSibling, this.textField3.previousElementSibling, this.textField4.previousElementSibling, this.textField5.previousElementSibling, this.textField6.previousElementSibling, this.textField7.previousElementSibling, this.textField8.previousElementSibling];
-        if (type === 'utilisateurs' || type === 'pays') {
-            for (let i = 1; i < textFields.length; i++) {
-                textFields[i].style.display = 'none';
-                labels[i].style.display = 'none';
-            }
-        } else {
-            textFields.forEach((textField, index) => {
-                textField.style.display = 'block';
-                labels[index].style.display = 'block';
-            });
-        }
-    }
+});
 
 
+function paysSuccess(data, text, jqXHR) {
+    var paysArray = JSON.parse(data);
 
+    var selectionList = $('#selectionList');
+    selectionList.empty();
+
+    paysArray.forEach(function (pays) {
+        var li = $('<li>').text(pays.nom);
+        selectionList.append(li);
+    });
 }
 
-const indexCtrl = new IndexCtrl();
+function voyageSuccess(data, text, jqXHR) {
+    var voyageArray = JSON.parse(data);
+
+    var selectionList = $('#selectionList');
+    selectionList.empty();
+
+    voyageArray.forEach(function (voyage) {
+        var li = $('<li>').text(voyage.nom);
+        selectionList.append(li);
+    });
+}
+
+
+function CallbackError(request, status, error) {
+    alert("erreur : " + error + ", request: " + request + ", status: " + status);
+    getAllPays(paysSuccess, CallbackError);
+}
