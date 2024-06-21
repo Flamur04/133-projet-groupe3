@@ -39,7 +39,7 @@
                 </div>
                 
                 <div class="flex items-center justify-between">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                    <button id="butConnect" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
                             type="button">
                         Se connecter
                     </button>
@@ -50,15 +50,8 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="javascript/services/serviceHttp.js"></script>
+    
     <script src="javascript/ctrl/loginCtrl.js"></script>
     
-    <script>
-        const serviceHttp = new ServiceHttp();
-        const connexionCtrl = new ConnexionCtrl(serviceHttp);
-        function onSubmit(event) {
-            return connexionCtrl.onSubmit(event);
-        }
-    </script> 
 </body>
 </html>

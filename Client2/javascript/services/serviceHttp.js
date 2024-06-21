@@ -92,3 +92,62 @@ function deleteVoyage(id, successCallback, errorCallback) {
 }
 
 
+/**
+ * Fonction permettant d'obtenir tous les pays.
+ * @param {Function} successCallback - callback en cas de succès.
+ * @param {Function} errorCallback - callback en cas d'erreur.
+ */
+function getUsers(successCallback, errorCallback) {
+    $.ajax({
+        type: "GET",
+        url: this.BASE_URL + "getUsers",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: successCallback,
+        error: errorCallback,
+    });
+}
+
+
+/**
+ * Fonction permettant de se connecter.
+ * @param {type} Fonction de callback lors du retour avec succès de l'appel.
+ * @param {type} Fonction de callback en cas d'erreur.
+ */
+function login(username, password, successCallback, errorCallback) {
+    
+
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        data: {
+            username: username,
+            password: password,
+        },
+        url: BASE_URL + "login",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: successCallback,
+        error: errorCallback,
+    });
+}
+
+/**
+ * Fonction permettant de se déconnecter.
+ * @param {type} Fonction de callback lors du retour avec succès de l'appel.
+ * @param {type} Fonction de callback en cas d'erreur.
+ */
+function logout(successCallback, errorCallback) {
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: BASE_URL + "logout",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: successCallback,
+        error: errorCallback,
+    });
+}
