@@ -55,7 +55,7 @@ $(document).ready(function () {
 function addReservationSuccess(data, textStatus, jqXHR) {
     if (jqXHR.status === 200) {
         alert("Voyage réservé !");
-        window.location.href = "http://localhost:5500/Client1/destinations.html";
+        window.location.href = "http://localhost:5500/Client1/reservations.html";
     } else {
         alert("Erreur lors de la réservation : " + textStatus); // Afficher le statut d'erreur
     }
