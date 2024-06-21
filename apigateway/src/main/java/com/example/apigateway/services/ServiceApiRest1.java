@@ -20,8 +20,8 @@ import org.springframework.web.client.RestTemplate;
 public class ServiceApiRest1 {
 
     private final RestTemplate restTemplate;
-    private final String apiGatewayUrl = "http://rest1:8081";
-    
+    private final String apiGatewayUrl = "http://localhost:8081";
+
     @Autowired
     public ServiceApiRest1(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
