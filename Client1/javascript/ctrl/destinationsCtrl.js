@@ -26,20 +26,51 @@ $(document).ready(function () {
     });
 
     btnReserverVoyage.click(function (event) {
-        //Integer userId = session.getAttribute("fk_user");
+        // Sélectionner la case à cocher cochée
+        var checkboxChecked = document.querySelector('.voyage-checkbox:checked');
 
-        addReservation(idUser, idVoyage, successCallback, errorCallback)
+        if (checkboxChecked) {
+            // Récupérer la valeur de card-pkVoyage pour la carte parente de la case cochée
+            var idVoyage = checkboxChecked.closest('.card').querySelector('.card-pkVoyage').textContent;
+
+            // Vous avez maintenant l'ID du voyage (pkVoyage) que vous pouvez utiliser
+            console.log("ID du voyage sélectionné :", idVoyage);
+
+            if (idUser) {
+                addReservation(idUser, idVoyage, addReservationSuccess, CallbackError)
+            } else {
+                alert("Utilisateur non connecté. Veuillez vous connecter.");
+                window.location.href = 'http://localhost:5500/Client1/login.html'; // Rediriger vers la page de connexion
+            }
+
+        } else {
+            // Aucune case à cocher cochée
+            alert("Veuillez sélectionner un voyage à réserver.");
+        }
     });
+
 
 });
 
+function addReservationSuccess(data, textStatus, jqXHR) {
+    if (jqXHR.status === 200) {
+        alert("Voyage réservé !");
+        window.location.href = "http://localhost:5500/Client1/destinations.html";
+    } else {
+        alert("Erreur lors de la réservation : " + textStatus); // Afficher le statut d'erreur
+    }
+}
+
+
+
 function chargerVoyagesSuccess(data, text, jqXHR) {
-    // Sélection de la section où les cartes de destination seront ajoutées
     var destinationsSection = document.getElementById("destinationsSection");
+
+    // Vider le contenu de la section avant de charger les nouvelles cartes
+    destinationsSection.innerHTML = '';
 
     // Fonction pour gérer la sélection des cases à cocher
     function handleCheckboxChange(event) {
-        // Désélectionner toutes les autres cases à cocher
         var checkboxes = document.querySelectorAll('.voyage-checkbox');
         checkboxes.forEach(function (checkbox) {
             if (checkbox !== event.target) {
@@ -48,48 +79,40 @@ function chargerVoyagesSuccess(data, text, jqXHR) {
         });
     }
 
-    // Parcourir les données (supposons que data soit un tableau d'objets JSON)
     data.forEach(function (voyage) {
-        // Création de la carte de voyage
         var card = document.createElement("div");
         card.classList.add("card");
 
-        // Construction du contenu de la carte
         var cardContent = `
             <img src="/Client1/images/image1.jpg" alt="${voyage.nom}" class="card-image">
             <div class="card-content">
                 <h2 class="card-title">${voyage.nom}</h2>
-                <p class="card-description">${voyage.pays}</p>
+                <p class="card-pkVoyage">${voyage.pkVoyage}</p>
+                <p class="card-description">${voyage.description}</p>
+                <p class="card-description">Prix: ${voyage.prix}</p>
                 <p class="card-description">Date de départ: ${voyage.dateDepart}</p>
                 <p class="card-description">Date de retour: ${voyage.dateRetour}</p>
-                <p class="card-description">Prix: ${voyage.prix}</p>
-                <p class="card-description">${voyage.description}</p>
                 <label>
-                    <input type="checkbox" class="voyage-checkbox" data-voyage-id="${voyage.id}">
+                    <input type="checkbox" class="voyage-checkbox">
                     Réserver ce voyage
                 </label>
             </div>
         `;
 
-        // Ajout du contenu à la carte
         card.innerHTML = cardContent;
-
-        // Ajout de la carte à la section
         destinationsSection.appendChild(card);
     });
 
-    // Ajout des gestionnaires d'événements pour les cases à cocher
     var checkboxes = document.querySelectorAll('.voyage-checkbox');
     checkboxes.forEach(function (checkbox) {
         checkbox.addEventListener('change', handleCheckboxChange);
     });
 }
 
+
 function disconnectSuccess(data, text, jqXHR) {
 
     if (data === true) {
-        //alert("Utilisateur déconnecté");
-        //window.location.reload();
         window.location.href = "http://localhost:5500/Client1/login.html";
     } else {
         alert("Aucun Utilisateur connecté");
@@ -105,6 +128,9 @@ function disconnectSuccess(data, text, jqXHR) {
  * @param {type} jqXHR
  */
 function CallbackError(request, status, error) {
-    alert("erreur : " + error + ", request: " + request + ", status: " + status);
-    chargerVoyages(chargerVoyagesSuccess, CallbackError);
+    if (request.status === 401) {
+        alert("Utilisateur non connecté. Veuillez vous connecter.");
+        window.location.href = 'http://localhost:5500/Client1/login.html'; // Rediriger vers la page de connexion
+        chargerVoyages(chargerVoyagesSuccess, CallbackError);
+    }
 }

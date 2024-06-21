@@ -102,16 +102,16 @@ public class Controller {
         }
     }
 
-       // Handler pour GET
-       @GetMapping(path = "/getReservationUser")
-       public ResponseEntity<Iterable<Reservation>> getReservationUser(Integer id) {
-           // Utilisez la session comme nécessaire
-           Iterable<Reservation> reservations = reservationService.getUserReservations(id);
-           return ResponseEntity.ok(reservations);
-       }
+    // Handler pour GET
+    @GetMapping(path = "/getReservationUser")
+    public ResponseEntity<Iterable<Reservation>> getReservationUser(Integer id) {
+        // Utilisez la session comme nécessaire
+        Iterable<Reservation> reservations = reservationService.getUserReservations(id);
+        return ResponseEntity.ok(reservations);
+    }
 
     @PostMapping(path = "/addReservation")
-    public ResponseEntity<?> addReservation(@RequestParam Integer fk_voyage, @RequestParam Integer fk_user) {
+    public ResponseEntity<?> addReservation(@RequestParam Integer fk_user, @RequestParam Integer fk_voyage) {
         try {
             // Créer une nouvelle réservation
             Reservation reservation = new Reservation();

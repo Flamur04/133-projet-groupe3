@@ -151,7 +151,8 @@ public class Controller {
     }
 
     @PostMapping("/addReservation")
-    public ResponseEntity<?> addReservation(@RequestParam Integer Fk_voyage, HttpSession session) {
+    public ResponseEntity<?> addReservation(@RequestParam Integer idUser, @RequestParam Integer idVoyage,
+            HttpSession session) {
         try {
 
             if (session.getAttribute("username") == null) {
@@ -159,12 +160,7 @@ public class Controller {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
             }
 
-            // Récupère l'ID de l'utilisateur à partir de la session
-            Integer fk_user = (Integer) session.getAttribute("fk_user");
-
-            // Ajoute la réservation en utilisant le service approprié avec les IDs du
-            // voyage et de l'utilisateur
-            ResponseEntity<?> response = serviceApiRest1.addReservation(Fk_voyage, 1);
+            ResponseEntity<?> response = serviceApiRest1.addReservation(idUser, idVoyage);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 // Retourne HTTP 200 avec le corps de la réponse en cas de succès
