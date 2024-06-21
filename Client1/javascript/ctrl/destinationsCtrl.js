@@ -120,7 +120,6 @@ function disconnectSuccess(data, text, jqXHR) {
 }
 
 
-
 /**
  * Méthode appelée en cas d'erreur lors de la lecture du webservice
  * @param {type} data
@@ -132,5 +131,8 @@ function CallbackError(request, status, error) {
         alert("Utilisateur non connecté. Veuillez vous connecter.");
         window.location.href = 'http://localhost:5500/Client1/login.html'; // Rediriger vers la page de connexion
         chargerVoyages(chargerVoyagesSuccess, CallbackError);
+    } else {
+        alert("Utilisateur non connecté. Veuillez vous connecter.");
+        window.location.href = 'http://localhost:5500/Client1/login.html'; // Rediriger vers la page de connexion
     }
 }

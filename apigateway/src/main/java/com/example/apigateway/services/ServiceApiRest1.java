@@ -4,6 +4,7 @@ import org.springframework.http.MediaType;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class ServiceApiRest1 {
@@ -114,6 +116,32 @@ public class ServiceApiRest1 {
             }
         } catch (HttpClientErrorException.BadRequest ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La reservation n'a pas pu être ajoutée !");
+        }
+    }
+
+    public ResponseEntity<?> getReservationUser(Integer id) {
+        String url = apiGatewayUrl + "/getReservationUser";
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url)
+                .queryParam("fk_user", id);
+
+        try {
+            ResponseEntity<Iterable<?>> response = restTemplate.exchange(
+                    builder.toUriString(),
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<Iterable<?>>() {
+                    });
+
+            // Vérifier la réponse
+            if (response.getStatusCode().is2xxSuccessful()) {
+                // Traitement réussi
+                return ResponseEntity.ok(response.getBody());
+            } else {
+                // Gérer les erreurs si nécessaire
+                return ResponseEntity.badRequest().body(response.getBody());
+            }
+        } catch (HttpClientErrorException.BadRequest ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         }
     }
 

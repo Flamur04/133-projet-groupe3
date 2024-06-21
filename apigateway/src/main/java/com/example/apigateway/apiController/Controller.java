@@ -24,7 +24,8 @@ import com.example.apigateway.services.ServiceApiRest2;
 
 import jakarta.servlet.http.HttpSession;
 
-@CrossOrigin(origins = {"https://hotif.emf-informatique.ch", "https://dufourj.emf-informatique.ch", "http://localhost:5500"}, allowCredentials = "true")
+@CrossOrigin(origins = { "https://hotif.emf-informatique.ch", "https://dufourj.emf-informatique.ch",
+        "http://localhost:5500" }, allowCredentials = "true")
 @RestController
 public class Controller {
 
@@ -43,27 +44,6 @@ public class Controller {
         // Renvoyer la réponse du service REST1 directement au client
         return ResponseEntity.ok(responseEntity.getBody());
     }
-
-    /*
-     * @GetMapping("/getUserConnected")
-     * public ResponseEntity<String> getUsersConnected(HttpSession session) {
-     * // Vérifier si l'utilisateur est connecté
-     * if (session.getAttribute("username") != null) {
-     * // L'utilisateur est connecté, procéder à la récupération des utilisateurs
-     * ResponseEntity<String> getUser = serviceApiRest1.getUsers();
-     * if (getUser.getStatusCode().is2xxSuccessful()) {
-     * return ResponseEntity.ok(getUser.getBody());
-     * } else {
-     * // Si l'authentification échoue, retourne HTTP 400 avec le message d'erreur
-     * return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getUser.getBody());
-     * }
-     * } else {
-     * // L'utilisateur n'est pas connecté, renvoyer une erreur non autorisée
-     * return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
-     * body("Utilisateur non connecté");
-     * }
-     * }
-     */
 
     @GetMapping("/getUsers")
     public ResponseEntity<?> getUsers() {
@@ -205,8 +185,14 @@ public class Controller {
     }
 
     @PutMapping("/modifieReservation")
-    public ResponseEntity<String> modifieReservation(@PathVariable int id, @RequestParam String name) {
+    public ResponseEntity<String> modifieReservation(@PathVariable int id, @RequestParam String name,
+            HttpSession session) {
         try {
+            if (session.getAttribute("username") == null) {
+                // Retourne HTTP 401 (Unauthorized) si aucun utilisateur n'est connecté
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+            }
+
             // Appelle la méthode du service avec l'ID et le nom du pays
             ResponseEntity<String> response = serviceApiRest2.updatePays(id, name);
 
@@ -224,12 +210,12 @@ public class Controller {
         }
     }
 
-    @GetMapping("/getAllVoyagesForUserConnected")
-    public ResponseEntity<String> getAllVoyages(HttpSession session) {
+    @GetMapping("/getAllReservationsForUserConnected")
+    public ResponseEntity<?> getAllReservationsForUserConnected(Integer fk_user, HttpSession session) {
         if (session.getAttribute("username") != null) {
             // L'utilisateur est connecté, procéder à la récupération des voyages
-            ResponseEntity<String> voyages = serviceApiRest2.getAllVoyages();
-            return voyages; // Retourne directement la réponse de serviceApiRest2.getAllVoyages()
+            ResponseEntity<?> reservations = serviceApiRest1.getReservationUser(fk_user);
+            return reservations; // Retourne directement la réponse de serviceApiRest2.getAllVoyages()
         } else {
             // L'utilisateur n'est pas connecté, renvoyer une erreur non autorisée
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
