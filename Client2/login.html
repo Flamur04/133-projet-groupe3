@@ -12,7 +12,7 @@
     <div class="flex justify-center items-center h-full">
         <div class="w-full max-w-xs">
             <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <h2 class="text-center text-xl mb-4">Connexion</h2>
+                <h2 class="text-center text-xl mb-4">Connexion Admin</h2>
                 
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
@@ -40,7 +40,7 @@
                 
                 <div class="flex items-center justify-between">
                     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
-                            type="submit">
+                            type="button">
                         Se connecter
                     </button>
                     <span id="loginError" class="text-red-500"></span>
@@ -49,8 +49,9 @@
         </div>
     </div>
 
-    <!-- <script src="js/Wrk/serviceHttp.js"></script>
-    <script src="js/Ctrl/connexionCtrl.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="javascript/services/serviceHttp.js"></script>
+    <script src="javascript/ctrl/loginCtrl.js"></script>
     
     <script>
         const serviceHttp = new ServiceHttp();
@@ -58,6 +59,6 @@
         function onSubmit(event) {
             return connexionCtrl.onSubmit(event);
         }
-    </script> -->
+    </script> 
 </body>
 </html>
